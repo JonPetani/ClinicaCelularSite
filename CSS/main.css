@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
 
 nav > a{
 	text-align: center;
@@ -16,12 +19,44 @@ main {
 	background-color:#efedf7;
 }
 
-h1 {
+h1, label , dt{
 	text-align: center;
 	font-family: 'Roboto', san-serif;
 }
 
-p {
+h2 {
+	text-align: center;
+	font-family: 'Libre Baskerville', serif;
+}
+
+
+p, dd{
 	text-align: center;
 	font-family: 'Roboto', sans-serif;
+}
+
+input[type=text], input[type=email], input[type=tel], input[type=password] {
+	width: 65%;
+	height: 5%;
+	text-align: center;
+}
+
+input[type=submit] {
+	background-color: orange;
+	font-family: 'Josefin Sans', sans-serif;
+	
+}
+
+input::placeholder {
+	font-family: 'Open Sans', sans-serif;
+}
+
+input:focus {
+	border: solid black 3px;
+	background-color: #f2f6fc;
+}
+
+form {
+	text-align: center;
+	background-color: #efffcc;
 }

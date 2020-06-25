@@ -4,15 +4,16 @@
 </head>
 <body>
 <nav align=center>
-<a href="">Home</a>
+<a href="Home.php">Home</a>
 <a href="">Tech Services</a>
-<a href="">Online Tech Shop</a>
-<a href="">About Us</a>
+<a href="store.php">Online Tech Shop</a>
+<a href="about.php">About Us</a>
 <a href="">Contact Us</a>
-<a href="">Register Account</a>
+<a href="register.php">Register Account</a>
 <a href="">Log In</a>
 </nav>
 <main>
+<h1>View Our Inventory</h1>
 <?php
 ?>
 </main>

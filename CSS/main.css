@@ -4,15 +4,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
 
+
 nav > a{
 	text-align: center;
 	display: block;
-	padding: 10px;
-	font-size: 120%;
+	padding: 10px 33px 10px 33px;
+	font-size: 149%;
 	background-color: orange;
 	font-family: Arial;
 	font-weight: bold;
-	border: 1.5px Solid gray; 
+	border: 1.5px Solid gray;
+	float: left;
+	text-decoration: none;
+}
+
+nav > a:hover {
+	border-top: 4px Solid #8374f2;
+}
+
+nav > a:visited, nav > a:active {
+	color: blue;
+	background-color: #ffd930;
 }
 
 main {

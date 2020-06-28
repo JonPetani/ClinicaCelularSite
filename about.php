@@ -13,7 +13,9 @@
 <a href="register.php">Register Account</a>
 <a href="">Log In</a>
 </nav>
+<br clear=both>
 <main>
+<br>
 <h1>About Clínica Celular</h1>
 <dl>
 <dt>

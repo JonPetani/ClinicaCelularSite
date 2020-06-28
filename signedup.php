@@ -14,21 +14,25 @@ if(strlen($_POST['Last']) < 2) {
 	header("Location: register.php?error=last");
 	die;
 }
-if(!preg_match('^.*@.*$', $_POST['Email'])) {
+if(!preg_match('^.*@.*$^', $_POST['Email'])) {
 	header("Location: register.php?error=email");
 	die;
 }
+if(!preg_match("^[0-9]{1,5},.{7,}$^", $_POST['Address'])) {
+	header("Location: register.php?error=address");
+	die;
+}
 if(!Empty($_POST['LPhone'])) {
-	if(!preg_match('^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$', $_POST['LPhone'])) {
+	if(!preg_match('^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$^', $_POST['LPhone'])) {
 		header("Location: register.php?error=lphone");
 		die;
 	}
 }
-if(!preg_match('^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$', $_POST['MPhone'])) {
+if(!preg_match('^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$^', $_POST['MPhone'])) {
 	header("Location: register.php?error=mphone");
 	die;
 }
-if(!preg_match('^[0-9]{5}$', $_POST['zipCode'])) {
+if(!preg_match('^[0-9]{5}$^', $_POST['zipCode'])) {
 	header("Location: register.php?error=zip");
 	die;
 }
@@ -38,9 +42,9 @@ $hasNum = false;
 foreach($char as $_POST['Password']) {
 	if(preg_match('[A-Z]', $char))
 		$hasUpper = true;
-	if(preg_match('[a-z]', $char)))
-		$hasLower = true;-
-	if(preg_match('[0-9]'), $char)
+	if(preg_match('[a-z]', $char))
+		$hasLower = true;
+	if(preg_match('[0-9]', $char))
 		$hasNum = true;
 	if($hasUpper == true and $hasLower == true and $hasNum == true)
 		break;

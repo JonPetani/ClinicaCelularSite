@@ -13,12 +13,14 @@
 <a href="register.php">Register Account</a>
 <a href="">Log In</a>
 </nav>
+<br clear=both>
 <main>
+<br>
 <h1>Clínica Celular</h1>
 <p>Welcome to our site.</p>
 </main>
 <script>
-$("h1".css("font-size", "275%");)
+$("h1").css("font-size", "275%");
 </script>
 </body>
 </html>

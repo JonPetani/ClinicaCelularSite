@@ -10,10 +10,29 @@
 <?php
 require "PHPAssets/connect.php";
 require "PHPAssets/formtools.php";
+if(isset($_SESSION['logged'])) {
+	if(strcmp($_SESSION['logged'], 'loggedin') == 0) {
+		header("Location: loggedin.php");
+		die;
+	}
+}
 ?>
+<nav align=center>
+<a href="Home.php">Home</a>
+<a href="">Tech Services</a>
+<a href="store.php">Online Tech Shop</a>
+<a href="about.php">About Us</a>
+<a href="">Contact Us</a>
+<a href="register.php" id="register">Register Account</a>
+<a href="login.php" id="login">Log In</a>
+</nav>
 <main align=center>
+<br clear=both>
 <h1>Create Account</h1>
 <form action="signedup.php" method="POST">
+<?php
+printError("loading", "Submission of Information Failed. Try Again.");
+?>
 <input name="First" type="text" placeholder="First Name" required autocomplete="false"/>
 <?php 
 printError("first", "First Name Should Be More Than One Charecter");
@@ -26,7 +45,7 @@ printError("last", "Last Name Should Be More Than One Charecter");
 <?php 
 printError("address", "Address Format Is Incorrect (Correct Example: 450, taco road)");
 ?>
-<input name="zipCode" type="text" placeholder="Zip Code" required autocomplete="true" pattern="^[0-9]{5}$^"/>
+<input name="zipCode" type="text" placeholder="Zip Code" required autocomplete="true" pattern="^[0-9]{5}$"/>
 <?php 
 printError("zip", "Zipcode needs 5 digits");
 ?>
@@ -42,7 +61,7 @@ printError("lphone", "Number Format Incorrect (Correct Examples: 43-4553-3454 or
 <?php 
 printError("email", "Not A Valid Email Address");
 ?>
-<input name="Password" type="password" placeholder="Password" required autocomplete="false"/>
+<input name="Password" type="password" placeholder="Password (Must Include One Uppercase, One Lower Case, One Number, and be at Least 12 Charecters Long)" required autocomplete="false"/>
 <?php 
 printError("password", "Password Doesn't Meet Requirements. (Must Have One Uppercase Letter, One Lower Letter, One Number, And Be 12 Charecters Minimum)");
 ?>
@@ -68,7 +87,7 @@ $("input[type=text],input[type=email],input[type=tel],input[type=password]").cli
 $("input[type=text],input[type=email],input[type=tel],input[type=password]").mouseleave(function() {
 	$(this).css({"height": "5%", "width": "65%"});
 });
-$("input").siblings("p").css({"font-size": "85%", "color": "#962b0e", "font-family": "'Barlow Semi Condensed', sans-serif"});
+$("input").siblings("p").css({"font-size": "85%", "color": "#fc3019", "font-family": "'Barlow Semi Condensed', sans-serif"});
 </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Arvo&display=swap');
 
 nav > a{
 	text-align: center;
@@ -29,6 +29,7 @@ nav > a:visited, nav > a:active {
 
 main {
 	background-color:#efedf7;
+	padding: 10px;
 }
 
 h1, label , dt{
@@ -71,4 +72,13 @@ input:focus {
 form {
 	text-align: center;
 	background-color: #efffcc;
+}
+
+main > a {
+	background-color: #7affca;
+	font-family: 'Arvo', serif;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 170%;
+	padding: 0px 5px 0px 5px;
 }

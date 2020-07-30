@@ -37,4 +37,10 @@ function decryptDisplay(string $field, object $con) {
 		return openssl_decrypt($field, $currentMethod, $_SESSION['key'], 0, $cipherInfo['IVLength']);
 	}
 }
+function randomCodeGenerator() {
+	$str = "";
+	for($i = 0; $i < random_int(20, 30); $i++)	
+		$str = $str . chr(random_int(0, 255));
+	return str;
+}
 ?>

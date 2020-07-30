@@ -1,7 +1,6 @@
 <?php
 require "PHPAssets/connect.php";
 require "PHPAssets/pagetools.php";
-require "PHPAssets/emailtools.php";
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if(empty($_POST['Uname']) or (preg_match('^.*@.*$^', $_POST['Uname']) == 0 and preg_match('^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$^', $_POST['Uname']) == 0)) {
 		header("Location: login.php?error=loading");
@@ -17,10 +16,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		header("Location: login.php?error=login");
 		die;
 	}
+	$_SESSION['key'] = randomCodeGenerator();
 	$user = $sql -> fetch(PDO::FETCH_ASSOC);
-	$_SESSION['key'] = "";
-	for($i = 0; $i < random_int(20, 30); $i++)	
-		$_SESSION['key'] = $_SESSION['key'] . chr(random_int(0, 255));
 	$length = openssl_cipher_iv_length($currentMethod);
 	$iv = openssl_random_pseudo_bytes($length);
 	$_SESSION['account'] = $user['CustomerId'];

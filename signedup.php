@@ -7,6 +7,7 @@
 <?php
 require "PHPAssets/connect.php";
 require "PHPAssets/pagetools.php";
+require "PHPAssets/emailtools.php";
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if(strcmp($_POST['Terms'], "si") != 0) {
 		header("Location: register.php?error=terms");
@@ -82,6 +83,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$verified = false;
 	$sql -> bindParam("verify", $verified);
 	$sql -> execute();
+	$vcode = randomCodeGenerator();
+	$codeset = $con -> prepare("UPDATE customer SET VerifyCode = :vc WHERE MobilePhone = :mp");
+	$codeset -> bindParam(":vc", $vcode);
+	$codeset -> bindParam(":mp", $_POST['MPhone']);
+	$codeset -> execute();
+	$message = "Este mensaje es de Clinica Celular. El código de verificación es " . $vcode;
+	$textStatus = sendText($message, $_POST['MPhone']);
 }
 else {
 	if(!isset($_GET['return'])) {

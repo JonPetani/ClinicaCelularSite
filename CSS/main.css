@@ -4,6 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Arvo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap');
 
 nav > a{
 	text-align: center;
@@ -81,4 +82,13 @@ main > a {
 	text-decoration: none;
 	font-size: 170%;
 	padding: 0px 5px 0px 5px;
+}
+
+div#Error > p {
+	padding: 30px;
+	font-family: 'Nanum Gothic', sans-serif;	
+}
+
+div#Error {
+	color: #f7bbad;
 }

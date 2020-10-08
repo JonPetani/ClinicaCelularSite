@@ -18,6 +18,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	$_SESSION['key'] = randomCodeGenerator();
 	$user = $sql -> fetch(PDO::FETCH_ASSOC);
+	if(intval($user['VerifiedAccount']) == 0) {
+		header("Location: login.php?error=verifyneeded");
+		die;
+	}
 	$length = openssl_cipher_iv_length($currentMethod);
 	$iv = openssl_random_pseudo_bytes($length);
 	$_SESSION['account'] = $user['CustomerId'];
@@ -59,6 +63,8 @@ else {
 <head>
 <link href="CSS/main.css" rel="stylesheet"/>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<title>Account Overview : Clínica Celular</title>
+<link href="Images/TabImg.png" rel="icon"/>
 </head>
 <body>
 <main>

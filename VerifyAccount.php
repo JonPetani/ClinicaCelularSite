@@ -5,13 +5,32 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@100&display=swap');
 </style>
-<title>Account Verification Step 1 : Clínica Celular</title>
+<title>Account Verification Step 2 : Clínica Celular</title>
 <link href="Images/TabImg.png" rel="icon"/>
 </head>
 <body>
 <?php
 require "PHPAssets/connect.php";
 require "PHPAssets/formtools.php";
+if(isset($_GET['account']) and !empty($_GET['account'])) {
+	$sql = $con -> prepare("SELECT * FROM customer WHERE EmailAddress = :email");
+	$address = urldecode($_GET['account']);
+	$sql -> bindParam(':email', $address);
+	$sql -> execute();
+	if($sql -> rowCount() <= 0) {
+		header("Location: loggedin.php");
+		die;
+	}
+	$account = $sql -> fetch(PDO::FETCH_ASSOC);
+	if($account['VerifiedAccount'] != 0) {
+		header("Location: loggedin.php");
+		die;
+	}
+}
+else {
+	header("Location: loggedin.php");
+	die;
+}
 if(isset($_SESSION['logged'])) {
 	if(strcmp($_SESSION['logged'], 'loggedin') == 0) {
 		header("Location: loggedin.php");
@@ -30,16 +49,16 @@ if(isset($_SESSION['logged'])) {
 </nav>
 <main align=center>
 <br clear=both>
-<h1>Looks Like You Still Need Your Account Verified. Give Us Your Address and We Will Guide You Through The Process</h1>
-<form action="sendemail.php" method="POST">
+<h1>One More Step Before You Can Use The Account</h1>
+<form action="login.php?action=verify&account=<?php echo urldecode($_GET['account']);?>" method="POST">
 <?php
 printError("loading", "Submission of Information Failed. Try Again.");
 ?>
-<input name="Email" type="email" placeholder="Enter The Email Address Assosiated With The Account You Wish To Verify" required autocomplete="false"/>
+<input name="Code" type="password" placeholder="Enter The Code You Got In The Email or Text" required autocomplete="false"/>
 <?php
-printError("email", "The Address Specified Does Not Match Any Accounts In Our System. If You Did Not Create a Account Yet, <a href='register.php'>Go Here</a> or Try Entering Again")
+printError("code", "Code Entered Doesn't Match The Email/Text's. Please Check The Message Again or Copy And Paste If Possible.")
 ?>
-<input type="submit" align=center name="EmailButton" value="Send Verification Email Now"/>
+<input type="submit" align=center value="Submit To Verify"/>
 </form>
 </main>
 <script>

@@ -1,105 +1,25 @@
-<html>
-<head>
-<link href="CSS/main.css" rel="stylesheet"/>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-<title>One More Step : Clínica Celular</title>
-<link href="Images/TabImg.png" rel="icon"/>
-</head>
-<body>
 <?php
 require "PHPAssets/connect.php";
 require "PHPAssets/pagetools.php";
 require "PHPAssets/emailtools.php";
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$sql = $con -> prepare("SELECT * FROM customer WHERE EmailAddress = :email OR MobilePhone = :phonemobile OR Phone = :phonelandline");
-	$sql -> bindParam(":email", $_POST['Email']);
-	$sql -> bindParam(":phonemobile", $_POST['MPhone']);
-	$sql -> bindParam(":phonelandline", $_POST['LPhone']);
-	$sql -> execute();
-	if($sql -> rowCount() > 0) {
-		header("Location: register.php?error=duplicate");
-		die;
-	}
-	if(strcmp($_POST['Terms'], "si") != 0) {
-		header("Location: register.php?error=terms");
-		die;
-	}
-	if(strlen($_POST['First']) < 2) {
-		header("Location: register.php?error=first");
-		die;
-	}
-	if(strlen($_POST['Last']) < 2) {
-		header("Location: register.php?error=last");
-		die;
-	}
-	if(preg_match('^.*@.*$^', $_POST['Email']) == 0) {
-		header("Location: register.php?error=email");
-		die;
-	}
-	if(preg_match("^[0-9]{1,5},.{7,}$^", $_POST['Address']) == 0) {
-		header("Location: register.php?error=address");
-		die;
-	}
-	if(!empty($_POST['LPhone'])) {
-		if(preg_match('^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$^', $_POST['LPhone']) == 0) {
-			header("Location: register.php?error=lphone");
+if($_SERVER['REQUEST_METHOD'] == "POST") {
+	switch($_POST['EmailButton']) {
+		case "Send Verification Email Now":
+		$status = verifyAddress($_POST['Email'], $con, 'customer');
+		if($status == false) {
+			header("Location: registerverify.php?error=email");
 			die;
 		}
-	}
-	if(preg_match('^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$^', $_POST['MPhone']) == 0) {
-		header("Location: register.php?error=mphone");
-		die;
-	}
-	if(preg_match('^[0-9]{5}$^', $_POST['zipCode']) == 0) {
-		header("Location: register.php?error=zip");
-		die;
-	}
-	$hasUpper = false;
-	$hasLower = false;
-	$hasNum = false;
-	$passStr = str_split($_POST['Password']);
-	foreach($passStr as $char) {
-		if(preg_match('^[A-Z]^', $char) == 1)
-			$hasUpper = true;
-		if(preg_match('^[a-z]^', $char) == 1)
-			$hasLower = true;
-		if(preg_match('^[0-9]^', $char) == 1)
-			$hasNum = true;
-		if($hasUpper == true and $hasLower == true and $hasNum == true)
-			break;
-	}
-	if($hasUpper == false or $hasLower == false or $hasNum == false or strlen($_POST['Password']) < 12) {
-		header("Location: register.php?error=password");
-		die;
-	}
-	if(strcmp($_POST['keepOn'], "si") !== 0)
-		$keepLoggedIn = false;
-	else
-		$keepLoggedIn = true;
-	if(strcmp($_POST['emailList'], "si") !== 0)
-		$emailList = false;
-	else
-		$emailList = true;
-	$sql = $con -> prepare("INSERT INTO customer (FirstName, LastName, Password, EmailAddress, Phone, MobilePhone, ZipCode, Address, KeepLoggedIn, EmailList, VerifiedAccount) VALUES (:First, :Last, :Password, :Email, :LPhone, :MPhone, :zipCode, :Address, :keepLoggedIn, :emailList, :verify)");
-	$sql -> bindParam(":First", $_POST['First']);
-	$sql -> bindParam(":Last", $_POST['Last']);
-	$sql -> bindParam(":Password", $_POST['Password']);
-	$sql -> bindParam(":Email", $_POST['Email']);
-	$sql -> bindParam(":LPhone", $_POST['LPhone']);
-	$sql -> bindParam(":MPhone", $_POST['MPhone']);
-	$sql -> bindParam(":zipCode", $_POST['zipCode']);
-	$sql -> bindParam(":Address", $_POST['Address']);
-	$sql -> bindParam(":keepLoggedIn", $keepLoggedIn);
-	$sql -> bindParam(":emailList", $emailList);
-	$verified = false;
-	$sql -> bindParam("verify", $verified);
-	$sql -> execute();
-	$vcode = randomCodeGenerator();
-	$codeset = $con -> prepare("UPDATE customer SET VerifyCode = :vc WHERE MobilePhone = :mp");
-	$codeset -> bindParam(":vc", $vcode);
-	$codeset -> bindParam(":mp", $_POST['MPhone']);
-	$codeset -> execute();
-	$html_body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"><head>
+		$verify_code = randomCodeGenerator();
+		$sql = $con -> prepare("UPDATE customer SET VerifyCode = :code WHERE EmailAddress = :email");
+		$sql -> bindParam(":code", $verify_code);
+		$sql -> bindParam(":email", $_POST['Email']);
+		$sql -> execute();
+		$sql = $con -> prepare("SELECT * FROM customer WHERE EmailAddress = :email");
+		$sql -> bindParam(":email", $_POST['Email']);
+		$sql -> execute();
+		$user_info = $sql -> fetch(PDO::FETCH_ASSOC);
+		$html_body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
       <!--[if !mso]><!-->
@@ -266,14 +186,14 @@ body {font-family: \'Muli\', sans-serif;}
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="948e3f3f-5214-4721-a90e-625a47b1c957" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:50px 30px 18px 30px; line-height:36px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 43px">Thanks for your service with us, ' . $_POST['First'] . '!&nbsp;</span></div><div></div></div></td>
+        <td style="padding:50px 30px 18px 30px; line-height:36px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 43px">Thanks for your service with us, ' . $user_info['FirstName'] . '!&nbsp;</span></div><div></div></div></td>
       </tr>
     </tbody>
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a10dcb57-ad22-4f4d-b765-1d427dfddb4e" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
         <td style="padding:18px 30px 18px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 18px">Please verify your email address to</span><span style="color: #000000; font-size: 18px; font-family: arial,helvetica,sans-serif"> begin your purchases through our endless inventory</span><span style="font-size: 18px">.</span></div>
-<div style="font-family: inherit; text-align: center"><span style="color: #ffbe00; font-size: 18px"><strong>Your Verification Code Is: ' . $vcode . '&nbsp;</strong></span></div><div></div></div></td>
+<div style="font-family: inherit; text-align: center"><span style="color: #ffbe00; font-size: 18px"><strong>Your Verification Code Is: ' . $verify_code . '&nbsp;</strong></span></div><div></div></div></td>
       </tr>
     </tbody>
   </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d">
@@ -394,36 +314,36 @@ body {font-family: \'Muli\', sans-serif;}
     
   
 </body></html>';
-	$subject = "Verify Account For " . $_POST['First'] . " " . $_POST['Last'] . " At Clinica Celular";
-	$sender = "dereisengott@gmail.com";
-	sendEmail($sender, $html_body, $_POST['Email'], $subject, $con);
-	//For Future When SMS Service Provider is Chosen
-	/*$message = "Este mensaje es de Clinica Celular. El código de verificación es " . $vcode;
-	$textStatus = sendText($message, $_POST['MPhone'], $con);
-	echo "Error: " . $textStatus;*/
-}
-else {
-	if(!isset($_GET['return'])) {
-		header('Location: register.php?error=loading');
+		$subject = "Verify Account For " . $user_info['FirstName'] . " " . $user_info['LastName'] . " At Clinica Celular";
+		$sender = "dereisengott@gmail.com";
+		sendEmail($sender, $html_body, $_POST['Email'], $subject, $con);
+		header("Login.php?error=emailsent");
+		die;
+		
+		case "Send Employee Recovery Email Now":
+		$status = verifyAddress($_POST['Email'], $con, 'employee');
+		if($status == false) {
+			header("Location: employeerecovery.php?error=email");
+			die;
+		}
+		$verify_code = randomCodeGenerator();
+		$sql = $con -> prepare("UPDATE employee SET VerifyCode = :code WHERE EmailAddress = :email");
+		$sql -> bindParam(":code", $verify_code);
+		$sql -> bindParam(":email", $_POST['Email']);
+		$sql -> execute();
+		$sql = $con -> prepare("SELECT * FROM employee WHERE EmailAddress = :email");
+		$sql -> bindParam(":email", $_POST['Email']);
+		$sql -> execute();
+		$user_info = $sql -> fetch(PDO::FETCH_ASSOC);
+		$subject = "Verify Account For " . $user_info['FirstName'] . " " . $user_info['LastName'] . " At Clinica Celular";
+		$sender = "dereisengott@gmail.com";
+		sendEmail($sender, $html_body, $_POST['Email'], $subject, $con);
+		header("Login.php?error=emailsent");
+		die;
+		
+		default:
+		header("Location: registerverify.php?error=loading");
 		die;
 	}
-	/*if(array_key_exists('Send Email', $_POST))
-		sendEmail($sender, $html_body, $_POST['Email'], $subject, $con);*/
 }
-
 ?>
-<main>
-<h1>Registration Successful</h1>
-<p>To verify your identity we will send you a email<!--text-->. Click the button below if you have not recieved a email in the inbox</p>
-<!--<form method="post">
-<input type="submit" name="Send Email"/>
-</form>-->
-<a href="registerverify.php" align=center id="sms">Send Verification Email Now<!--Send SMS Text Verification Now--></a>
-<?php
-printReturn("verify", "Email Sent. If you still don't see the email, request another.");
-changeButton("verify", "email", "Send Email Again");
-?>
-<a href="login.php" align=center>Once Complete, Log Into Your New Account Here</a>
-</main>
-</body>
-</html>

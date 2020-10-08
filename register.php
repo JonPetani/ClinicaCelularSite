@@ -5,6 +5,8 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@100&display=swap');
 </style>
+<title>Sign Up : Clínica Celular</title>
+<link href="Images/TabImg.png" rel="icon"/>
 </head>
 <body>
 <?php
@@ -32,6 +34,7 @@ if(isset($_SESSION['logged'])) {
 <form action="signedup.php" method="POST">
 <?php
 printError("loading", "Submission of Information Failed. Try Again.");
+printError("duplicate", "Account With Existing Email, Mobile Phone, and/or Landline Phone Exists Already. If This Shouldn't Be The Case, Contact Support Here.");
 ?>
 <input name="First" type="text" placeholder="First Name" required autocomplete="false"/>
 <?php 

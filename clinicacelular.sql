@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 30, 2020 at 11:02 PM
+-- Generation Time: Oct 08, 2020 at 07:43 PM
 -- Server version: 10.1.39-MariaDB
 -- PHP Version: 7.3.5
 
@@ -44,7 +44,7 @@ CREATE TABLE `customer` (
   `SecureMethod` varchar(30) DEFAULT NULL COMMENT 'cipher method for session',
   `IVLength` text COMMENT 'IV Length for Cipher',
   `CipherKey` varchar(30) DEFAULT NULL COMMENT 'cipher key',
-  `VerifyCode` varchar(30) DEFAULT NULL COMMENT 'SMS/Email Code'
+  `VerifyCode` varchar(30) DEFAULT NULL COMMENT 'Email Verify/Recovery Code'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Listing of all Customer Created Accounts on System';
 
 --
@@ -52,7 +52,40 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`CustomerId`, `FirstName`, `LastName`, `Password`, `EmailAddress`, `Phone`, `MobilePhone`, `ZipCode`, `Address`, `KeepLoggedIn`, `EmailList`, `VerifiedAccount`, `SecureMethod`, `IVLength`, `CipherKey`, `VerifyCode`) VALUES
-(1, 'Simon', 'Jacinto', '3javVZYAWpbpCqc', 'SJacinto@tacos.com', '455-445-4454', '76-6998-8765', '48554', '455, taco street, memexico', 1, 1, 0, 'aes-256-cfb8', ':wU~f¸L\'nÎÃ¡ !Ð', 'É³`/pú±…>‹id÷Ç4kÖë', NULL);
+(4, 'Juanita', 'Senora', 'i46VpTRCHyUt9vn', 'UnstoppableStreletsy@gmail.com', '22-3445-5654', '703-348-1101', '45948', '234, Yin Yang Way,', 1, 1, 1, 'camellia-256-cfb', '€-½(]íÀFÂ’à×5', ':Sm`X2_2[IF6RcwIxv;7ZW', 'mXfk2oE?cBeDYw@wuJoKaB0c');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee`
+--
+
+CREATE TABLE `employee` (
+  `EmployeeID` int(11) NOT NULL COMMENT 'Employee Account ID',
+  `First` varchar(40) NOT NULL COMMENT 'First Name',
+  `Last` varchar(40) NOT NULL COMMENT 'Last Name',
+  `EmailAddress` varchar(65) NOT NULL COMMENT 'Email Address',
+  `Role` varchar(50) NOT NULL COMMENT 'Role in Company',
+  `Salary` double NOT NULL COMMENT 'Set Salary for Employee',
+  `Password` varchar(30) NOT NULL COMMENT 'Secure Password',
+  `SecureMethod` varchar(30) DEFAULT NULL COMMENT 'cipher method for session',
+  `IVLength` text COMMENT 'Iv Length for Cipher',
+  `CipherKey` varchar(30) DEFAULT NULL COMMENT 'cipher key',
+  `VerifyCode` varchar(30) DEFAULT NULL COMMENT 'Account Recovery Code'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Employee Account Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sitecodes`
+--
+
+CREATE TABLE `sitecodes` (
+  `CodeID` int(11) NOT NULL COMMENT 'Code Index ID',
+  `CodeName` varchar(60) NOT NULL COMMENT 'Code Name/Purpose',
+  `CodeValue` varchar(30) NOT NULL COMMENT 'Code Value Itself',
+  `LastUpdated` date NOT NULL COMMENT 'Last Time This Code Value Was Modified For Maintenence Purposes'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Holds Security Codes on Platform (Mainly for Employee Stuff)';
 
 --
 -- Indexes for dumped tables
@@ -65,6 +98,18 @@ ALTER TABLE `customer`
   ADD PRIMARY KEY (`CustomerId`);
 
 --
+-- Indexes for table `employee`
+--
+ALTER TABLE `employee`
+  ADD PRIMARY KEY (`EmployeeID`);
+
+--
+-- Indexes for table `sitecodes`
+--
+ALTER TABLE `sitecodes`
+  ADD PRIMARY KEY (`CodeID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -72,7 +117,13 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `CustomerId` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Customer Id', AUTO_INCREMENT=2;
+  MODIFY `CustomerId` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Customer Id', AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `sitecodes`
+--
+ALTER TABLE `sitecodes`
+  MODIFY `CodeID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Code Index ID';
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

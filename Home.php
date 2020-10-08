@@ -3,6 +3,8 @@
 <link href="CSS/main.css" rel="stylesheet"/>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 </head>
+<title>Clínica Celular</title>
+<link href="Images/TabImg.png" rel="icon"/>
 <body>
 <?php
 require "PHPAssets/connect.php"

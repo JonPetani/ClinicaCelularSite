@@ -1,10 +1,8 @@
 <?php
-function printReturn(string $returncode, string $returntxt) {
-	if(isset($_GET['return'])) {
-		if(strcmp($_GET['return'], $returncode) == 0) {
-			printf("<p>%s</p>", $returntxt);
-		}
-	}
+function errorPageDisplay(string $reason) {
+	echo "<div id='Error'>";
+	printf("<p>%s</p>", $reason);
+	echo "</div>";
 }
 function changeButton(string $returncode, string $button, string $buttontxt) {
 	if(isset($_GET['return'])) {
@@ -40,7 +38,7 @@ function decryptDisplay(string $field, object $con) {
 function randomCodeGenerator() {
 	$str = "";
 	for($i = 0; $i < random_int(20, 30); $i++)	
-		$str = $str . chr(random_int(0, 255));
-	return str;
+		$str = $str . chr(random_int(48, 122));
+	return $str;
 }
 ?>

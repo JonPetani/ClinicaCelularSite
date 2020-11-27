@@ -6,8 +6,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		header("Location: login.php?error=loading");
 		die;
 	}
-	$methods = openssl_get_cipher_methods();
-	$currentMethod = $methods[random_int(0, sizeof($methods))];
 	$sql = $con -> prepare("SELECT * FROM customer WHERE (EmailAddress = :Uname OR Phone = :Uname OR MobilePhone = :Uname) AND Password = :Password");
 	$sql -> bindParam(":Uname", $_POST['Uname']);
 	$sql -> bindParam(":Password", $_POST['Password']);
@@ -16,35 +14,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		header("Location: login.php?error=login");
 		die;
 	}
-	$_SESSION['key'] = randomCodeGenerator();
 	$user = $sql -> fetch(PDO::FETCH_ASSOC);
+	if((strcmp($user['EmailAddress'], $_POST['Uname']) != 0 and strcmp($user['MobilePhone'], $_POST['Uname']) != 0 and strcmp($user['Phone'], $_POST['Uname']) != 0) or strcmp($user['Password'], $_POST['Password']) != 0) {
+		header("Location: login.php?error=login");
+		die;
+	}
 	if(intval($user['VerifiedAccount']) == 0) {
 		header("Location: login.php?error=verifyneeded");
 		die;
 	}
-	$length = openssl_cipher_iv_length($currentMethod);
-	$iv = openssl_random_pseudo_bytes($length);
-	$_SESSION['account'] = $user['CustomerId'];
-	$_SESSION['fname'] = openssl_encrypt($user['FirstName'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$_SESSION['lname'] = openssl_encrypt($user['LastName'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$_SESSION['email'] = openssl_encrypt($user['EmailAddress'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$_SESSION['lphone'] = openssl_encrypt($user['Phone'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$_SESSION['mphone'] = openssl_encrypt($user['MobilePhone'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$_SESSION['zip'] = openssl_encrypt($user['ZipCode'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$_SESSION['address'] = openssl_encrypt($user['Address'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$_SESSION['stay'] = (bool)$user['KeepLoggedIn'];
-	$_SESSION['password'] = openssl_encrypt($user['Password'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$_SESSION['logged'] = 'loggedin';
 	$_SESSION['type'] = 'customer';
-	$update = $con -> prepare("UPDATE customer SET KeepLoggedIn = :keep, SecureMethod = :cm, IVLength = :iv, CipherKey = :key WHERE Password = :pass");
-	$update -> bindParam(':keep', $_SESSION['stay']);
-	$update -> bindParam(':cm', $currentMethod);
-	$update -> bindParam(':iv', $iv);
-	$update -> bindParam(':key', $_SESSION['key']);
-	$pass = openssl_decrypt($_SESSION['password'], $currentMethod, $_SESSION['key'], 0, $iv);
-	$update -> bindParam(':pass', $pass);
-	$update -> execute();
-	
+	$_SESSION['logged'] = 'loggedin';
+	$status = encryptSet($user, $con);
 }
 else {
 	if(isset($_SESSION['logged'])) {
@@ -67,10 +48,24 @@ else {
 <link href="Images/TabImg.png" rel="icon"/>
 </head>
 <body>
+<nav align=center>
+<a href="Home.php">Home</a>
+<a href="">Tech Services</a>
+<a href="store.php">Online Tech Shop</a>
+<a href="about.php">About Us</a>
+<a href="">Contact Us</a>
+<a href="register.php" id="register">Register Account</a>
+<a href="login.php" id="login">Log In</a>
+<?php
+setAccountTabs();
+?>
+</nav>
 <main>
-<h1> Welcome Back <?php echo decryptDisplay($_SESSION['fname'], $con);?></h1>
+<br clear=both>
+<h1> Welcome Back <?php echo decryptDisplay($_SESSION['FirstName'], $con);?></h1>
+<h1> Welcome Back <?php echo $_SESSION['FirstName'];?></h1>
 <p>Now that your signed in, you may begin your purchases as you desire.</p>
-<a href="store.php" align=center id="sms">To Our Merchandise</a>
+<a href="store.php" style="text-align:center;" id="sms">To Our Merchandise</a>
 </main>
 </body>
 </html>

@@ -94,7 +94,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$verified = false;
 	$sql -> bindParam("verify", $verified);
 	$sql -> execute();
-	$vcode = randomCodeGenerator();
+	$vcode = randomCodeGenerator(20, 30);
 	$codeset = $con -> prepare("UPDATE customer SET VerifyCode = :vc WHERE MobilePhone = :mp");
 	$codeset -> bindParam(":vc", $vcode);
 	$codeset -> bindParam(":mp", $_POST['MPhone']);
@@ -291,7 +291,7 @@ body {font-family: \'Muli\', sans-serif;}
               <tbody>
                 <tr>
                 <td align="center" bgcolor="#ffbe00" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;">
-                  <a href="http://localhost:8080/ClinicaCelularSite/VerifyAccount.php?account=' . urlencode($_POST['Email']) . '" style="background-color:#ffbe00; border:1px solid #ffbe00; border-color:#ffbe00; border-radius:0px; border-width:1px; color:#000000; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Verify Email Now</a>
+                  <a href="http://localhost:8080/ClinicaCelularSite/VerifyAccount.php?account=' . urlencode($_POST['Email']) . '&type=verify" style="background-color:#ffbe00; border:1px solid #ffbe00; border-color:#ffbe00; border-radius:0px; border-width:1px; color:#000000; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Verify Email Now</a>
                 </td>
                 </tr>
               </tbody>
@@ -420,7 +420,6 @@ else {
 </form>-->
 <a href="registerverify.php" align=center id="sms">Send Verification Email Now<!--Send SMS Text Verification Now--></a>
 <?php
-printReturn("verify", "Email Sent. If you still don't see the email, request another.");
 changeButton("verify", "email", "Send Email Again");
 ?>
 <a href="login.php" align=center>Once Complete, Log Into Your New Account Here</a>

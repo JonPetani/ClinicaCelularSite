@@ -2,6 +2,7 @@
 <head>
 <link href="CSS/main.css" rel="stylesheet"/>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="JS/formsetup.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@100&display=swap');
 </style>
@@ -56,16 +57,7 @@ printError("email", "The Address Specified Does Not Match Any Employee Accounts 
 </form>
 </main>
 <script>
-$("input").after("<br><br>");
-$("input").css("padding", "15px");
-$("input[type=submit]").css("font-size", "150%");
-$("input[type=text],input[type=email],input[type=tel],input[type=password]").click(function() {
-	$(this).css({"height": "6.5%", "width": "67%"});
-});
-$("input[type=text],input[type=email],input[type=tel],input[type=password]").mouseleave(function() {
-	$(this).css({"height": "5%", "width": "65%"});
-});
-$("input").siblings("p").css({"font-size": "85%", "color": "#fc3019", "font-family": "'Barlow Semi Condensed', sans-serif"});
+formSetup();
 </script>
 </body>
 </html>

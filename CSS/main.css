@@ -90,5 +90,15 @@ div#Error > p {
 }
 
 div#Error {
-	color: #f7bbad;
+	background-color: #f7bbad;
+}
+
+div#Info > p {
+	padding: 15px 5px 15px 5px;
+	color: green;
+	font-size: 125%;
+}
+
+div#Info {
+	background-color: #f0ffb3;
 }

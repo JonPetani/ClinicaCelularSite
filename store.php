@@ -7,7 +7,8 @@
 </head>
 <body>
 <?php
-require "PHPAssets/connect.php"
+require "PHPAssets/connect.php";
+require "PHPAssets/pagetools.php";
 ?>
 <nav align=center>
 <a href="Home.php">Home</a>
@@ -18,15 +19,7 @@ require "PHPAssets/connect.php"
 <a href="register.php" id='register'>Register Account</a>
 <a href="login.php" id='login'>Log In</a>
 <?php
-if(isset($_SESSION['logged'])) {
-	if(strcmp($_SESSION['logged'], 'loggedin') == 0) {
-		echo"<script>";
-		echo"$('#register').remove();";
-		echo"$('#login').remove();";
-		echo"$('nav').append('<a href=\'logout.php\'>Log Out</a>');";
-		echo"</script>";
-	}
-}
+setAccountTabs();
 ?>
 </nav>
 <br clear=both>

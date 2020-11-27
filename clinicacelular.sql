@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 08, 2020 at 07:43 PM
+-- Generation Time: Nov 13, 2020 at 04:00 AM
 -- Server version: 10.1.39-MariaDB
 -- PHP Version: 7.3.5
 
@@ -41,9 +41,6 @@ CREATE TABLE `customer` (
   `KeepLoggedIn` tinyint(1) NOT NULL COMMENT 'Whether To Keep Logged In After Closing Browser',
   `EmailList` tinyint(1) NOT NULL COMMENT 'If Customer Wants To Receive Emails With Offers',
   `VerifiedAccount` tinyint(1) NOT NULL COMMENT 'If SMS Verification was done yet',
-  `SecureMethod` varchar(30) DEFAULT NULL COMMENT 'cipher method for session',
-  `IVLength` text COMMENT 'IV Length for Cipher',
-  `CipherKey` varchar(30) DEFAULT NULL COMMENT 'cipher key',
   `VerifyCode` varchar(30) DEFAULT NULL COMMENT 'Email Verify/Recovery Code'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Listing of all Customer Created Accounts on System';
 
@@ -51,8 +48,8 @@ CREATE TABLE `customer` (
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`CustomerId`, `FirstName`, `LastName`, `Password`, `EmailAddress`, `Phone`, `MobilePhone`, `ZipCode`, `Address`, `KeepLoggedIn`, `EmailList`, `VerifiedAccount`, `SecureMethod`, `IVLength`, `CipherKey`, `VerifyCode`) VALUES
-(4, 'Juanita', 'Senora', 'i46VpTRCHyUt9vn', 'UnstoppableStreletsy@gmail.com', '22-3445-5654', '703-348-1101', '45948', '234, Yin Yang Way,', 1, 1, 1, 'camellia-256-cfb', '€-½(]íÀFÂ’à×5', ':Sm`X2_2[IF6RcwIxv;7ZW', 'mXfk2oE?cBeDYw@wuJoKaB0c');
+INSERT INTO `customer` (`CustomerId`, `FirstName`, `LastName`, `Password`, `EmailAddress`, `Phone`, `MobilePhone`, `ZipCode`, `Address`, `KeepLoggedIn`, `EmailList`, `VerifiedAccount`, `VerifyCode`) VALUES
+(6, 'Simon', 'Jacinto', '4BBdwSvgvjvUsej', 'UnstoppableStreletsy@gmail.com', '87-0997-8768', '862-258-4243', '54325', '455, taco street, memexico', 0, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -62,16 +59,16 @@ INSERT INTO `customer` (`CustomerId`, `FirstName`, `LastName`, `Password`, `Emai
 
 CREATE TABLE `employee` (
   `EmployeeID` int(11) NOT NULL COMMENT 'Employee Account ID',
-  `First` varchar(40) NOT NULL COMMENT 'First Name',
-  `Last` varchar(40) NOT NULL COMMENT 'Last Name',
+  `FirstName` varchar(40) NOT NULL COMMENT 'First Name',
+  `LastName` varchar(40) NOT NULL COMMENT 'Last Name',
   `EmailAddress` varchar(65) NOT NULL COMMENT 'Email Address',
   `Role` varchar(50) NOT NULL COMMENT 'Role in Company',
   `Salary` double NOT NULL COMMENT 'Set Salary for Employee',
   `Password` varchar(30) NOT NULL COMMENT 'Secure Password',
-  `SecureMethod` varchar(30) DEFAULT NULL COMMENT 'cipher method for session',
-  `IVLength` text COMMENT 'Iv Length for Cipher',
-  `CipherKey` varchar(30) DEFAULT NULL COMMENT 'cipher key',
-  `VerifyCode` varchar(30) DEFAULT NULL COMMENT 'Account Recovery Code'
+  `KeepLoggedIn` tinyint(1) NOT NULL COMMENT 'Keep Logged On',
+  `VerifyCode` varchar(30) DEFAULT NULL COMMENT 'Account Recovery Code',
+  `IsSecure` tinyint(1) NOT NULL COMMENT 'If Account Recovery is occurring Account is locked',
+  `AdminPassword` varchar(40) DEFAULT NULL COMMENT 'Additional Password For Site Admins'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Employee Account Table';
 
 -- --------------------------------------------------------
@@ -117,7 +114,7 @@ ALTER TABLE `sitecodes`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `CustomerId` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Customer Id', AUTO_INCREMENT=5;
+  MODIFY `CustomerId` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Customer Id', AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `sitecodes`

@@ -6,4 +6,13 @@ function printError(string $errorcode, string $errordesc) {
 		}
 	}
 }
+function printInfo(string $infocode, string $info) {
+	if(isset($_GET['info'])) {
+		if(strcmp($_GET['info'], $infocode) == 0) {
+			echo "<div id='Info'>";
+			printf("<p>%s</p>", $info);
+			echo "</div>";
+		}
+	}
+}
 ?>

@@ -6,7 +6,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Arvo&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap');
 
-nav > a{
+
+/*nav > a{
 	text-align: center;
 	display: block;
 	padding: 10px 33px 10px 33px;
@@ -26,30 +27,24 @@ nav > a:hover {
 nav > a:visited, nav > a:active {
 	color: blue;
 	background-color: #ffd930;
-}
+}*/
 
 main {
 	background-color:#efedf7;
 	padding: 10px;
 }
 
-h1, label , dt{
+h1, label, p, dd, dt {
 	text-align: center;
 	font-family: 'Roboto', san-serif;
 }
 
-h2 {
+h2, h3 {
 	text-align: center;
 	font-family: 'Libre Baskerville', serif;
 }
 
-
-p, dd{
-	text-align: center;
-	font-family: 'Roboto', sans-serif;
-}
-
-input[type=text], input[type=email], input[type=tel], input[type=password] {
+input.fillout{
 	width: 65%;
 	height: 5%;
 	text-align: center;
@@ -58,24 +53,33 @@ input[type=text], input[type=email], input[type=tel], input[type=password] {
 input[type=submit] {
 	background-color: orange;
 	font-family: 'Josefin Sans', sans-serif;
-	
 }
 
 input::placeholder {
 	font-family: 'Open Sans', sans-serif;
+	font-weight: bold;
 }
 
-input:focus {
+/*input.fillout:focus {
 	border: solid black 3px;
 	background-color: #f2f6fc;
-}
+}*/
 
 form {
 	text-align: center;
-	background-color: #efffcc;
+	padding: 25px 0px 25px 0px;
 }
 
-main > a {
+form.bigform {
+	background-color: Tomato;
+}
+
+input.search {
+	width: 100%;
+	text-align: center;
+}
+
+.lone-link {
 	background-color: #7affca;
 	font-family: 'Arvo', serif;
 	font-weight: bold;
@@ -101,4 +105,33 @@ div#Info > p {
 
 div#Info {
 	background-color: #f0ffb3;
+}
+
+div.selector *{
+	float: left;
+	text-align: center;
+	background-color: orange;
+	font-family: 'Josefin Sans', sans-serif;
+	padding: 20px;
+}
+
+img.ImgNav {
+	width: 50%;
+	height: 80%;
+}
+
+img.FooterImg {
+	width: 5%;
+	height: 5%;
+}
+
+div#ShopNav > a, div#ShopNav > h4{
+	float: left;
+	font-weight: bold;
+	display: block;
+	text-align: center;
+}
+
+td {
+	text-align: center;
 }

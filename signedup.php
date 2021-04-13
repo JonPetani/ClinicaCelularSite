@@ -1,7 +1,7 @@
 <html>
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 <link href="CSS/main.css" rel="stylesheet"/>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <title>One More Step : Clínica Celular</title>
 <link href="Images/TabImg.png" rel="icon"/>
 </head>
@@ -412,6 +412,10 @@ else {
 }
 
 ?>
+<div class="container">
+<?php
+setAccountTabs($con);
+?>
 <main>
 <h1>Registration Successful</h1>
 <p>To verify your identity we will send you a email<!--text-->. Click the button below if you have not recieved a email in the inbox</p>
@@ -424,5 +428,8 @@ changeButton("verify", "email", "Send Email Again");
 ?>
 <a href="login.php" align=center>Once Complete, Log Into Your New Account Here</a>
 </main>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 </body>
 </html>

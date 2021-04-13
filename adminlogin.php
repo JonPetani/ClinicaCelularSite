@@ -2,17 +2,27 @@
 include "PHPAssets/connect.php";
 include "PHPAssets/pagetools.php";
 include "PHPAssets/accounttools.php";
-isEmployee($con, decryptDisplay($_SESSION['CodeValue'], $con));
+if(!isset($_SESSION['CodeValue'])) {
+		session_destroy();
+		header("Location: employeeverify.php?error=employeeverifyfailed");
+		die;
+}
+if(!isset($_SESSION['Password'])) {
+	header("Location: employeelogin.php?error=earlylogout");
+	die;
+}
+$verify_array = array("CodeValue" => decryptDisplay($_SESSION['CodeValue'], $con), "Password" => decryptDisplay($_SESSION['Password'], $con));
+isEmployee($con, $verify_array);
+unset($verify_array);
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$sql = $con -> prepare("SELECT * FROM employee WHERE AdminPassword = :admin");
-	$sql -> bindParam(':admin', $_POST['ACode']);
-	$sql -> execute();
-	if($sql -> rowCount() == 1) {
+	$account = decryptDisplay($_SESSION['EmailAddress'], $con);
+	$apcheck = $con -> prepare('SELECT * FROM employee WHERE EmailAddress = :acc');
+	$apcheck -> bindParam(':acc', $account);
+	$apcheck -> execute();
+	$admin_code = $apcheck -> fetch(PDO::FETCH_ASSOC);
+	if(strcmp($admin_code['AdminPassword'], $_POST['ACode']) == 0) {
 		$_SESSION['admin'] = true;
-		$admin = $sql -> fetch(PDO::FETCH_ASSOC);
-		$admin_array = array('AdminPassword' => $admin_array['AdminPassword']);
-		$status = encryptSet($admin_array, $con);
-		header("Location: employeehome.php");
+		header("Location: employeehome.php?info=adminlogged");
 		die;
 	}
 	else {

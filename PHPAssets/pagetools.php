@@ -3,6 +3,7 @@ function errorPageDisplay(string $reason) {
 	echo "<div id='Error'>";
 	printf("<p>%s</p>", $reason);
 	echo "</div>";
+	die;
 }
 function changeButton(string $returncode, string $button, string $buttontxt) {
 	if(isset($_GET['return'])) {
@@ -32,7 +33,7 @@ function decryptDisplay(string $field, object $con) {
 		}
 	}
 	$arr_key = array_search($field, $_SESSION, false);
-	if($arr_key == 'Password') {
+	if(strcmp($arr_key, "Password") == 0) {
 		$account = decryptDisplay($_SESSION['EmailAddress'], $con);
 		if(!isset($_SESSION['type'])) {
 			session_destroy();
@@ -64,7 +65,7 @@ function decryptDisplay(string $field, object $con) {
 		}
 		else {
 			return $pword['Password'];
-		}
+		}	
 	}
 	$method = "aes-256-gcm";
 	return openssl_decrypt($field, $method, $_SESSION['CipherKey'], OPENSSL_RAW_DATA, $_SESSION['IVLength'], $_SESSION['tags'][$arr_key]);
@@ -99,7 +100,7 @@ function encryptSet(array $user_data, object $con) {
 	foreach($user_data as $account_fields => $value) {
 		if(is_string($value)) {
 			if(preg_match("^.*Password.*$^", $account_fields) != 0)
-				$_SESSION[$account_fields] = password_hash($value, PASSWORD_ARGON2ID);
+				$_SESSION[$account_fields] = password_hash($value, PASSWORD_DEFAULT);
 			else {
 				$tag_set['tags'][$account_fields] = "";
 				$_SESSION[$account_fields] = openssl_encrypt($value, $method, $_SESSION['CipherKey'], OPENSSL_RAW_DATA, $_SESSION['IVLength'], $_SESSION['tags'][$account_fields], '', 16);
@@ -110,46 +111,228 @@ function encryptSet(array $user_data, object $con) {
 	}
 	return true;
 }
-function setAccountTabs() {
+function setAccountTabs(object $con) {
 	if(isset($_SESSION['logged']) and isset($_SESSION['type'])) {
 		if(strcmp($_SESSION['logged'], 'loggedin') == 0) {
 			switch($_SESSION['type']) {
 				case 'customer':
-				echo"<script>";
-				echo"$('#register').remove();";
-				echo"$('#login').remove();";
-				echo"$('nav').append('<a href=\'loggedin.php\'>My Account</a>');";
-				echo"$('nav').append('<a href=\'logout.php\'>Log Out</a>');";
-				echo"$('nav').find('a').css('padding', '10px 35px 10px 35px');";
-				echo"</script>";
+				echo "<div class='row'>";
+				echo '<div class="col-sm-4"><a href="Home.php"><img src="Images/ClinicaIcon.png"  style="width:65%;height50%;background-color:MediumPurple;" title="Clinica Celular" alt="Clinica Celular"/></a></div>';
+				echo '<div class="col-sm-4"><form action="store.php?action=search"><input class="search" id="headerbar" onfocus="searchBarHelpText(this)" onfocusout="searchBarDefaultText(this)" type="text" name="SearchQuery" placeholder="Looking For Something? Find it Here" required autocomplete="false"/></form></div>';
+				echo '<div class="col-sm-4"><ul class="nav nav-tabs justify-content-center navbar-dark bg-dark"><li class="nav-item"><a class="nav-link" href="shoppingcart.php">&#128722;</a></li></ul></div>';
+				echo "</div>";
+				echo '<ul class="nav nav-tabs justify-content-center navbar-dark bg-dark">';
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="repairshop.php">Tech Services</a>';
+				echo '</li>';
+				echo '<li class="nav-item dropdown">';
+				echo '<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="">Online Tech Shop</a>';
+				echo '<div class="dropdown-menu" style="overflow-y:auto;">';
+				echo '<h5 class="dropdown-header">Shop All our Products</h5>';
+				echo "<a class='dropdown-item' href='store.php'>Our Full Inventory</a>";
+				echo '<div class="dropdown-divider"></div>';
+				echo '<h5 class="dropdown-header">Shop by Brand</h5>';
+				$brand_names = $con -> prepare('SELECT DISTINCT Brand FROM product');
+				$brand_names -> execute();
+				$brand_links = $brand_names -> fetchAll(PDO::FETCH_ASSOC);
+				for($i = 0; $i < sizeof($brand_links); $i++) {
+					printf("<a class='dropdown-item' href='store.php?Brand=%s'>%s</a>", $brand_links[$i]['Brand'], $brand_links[$i]['Brand']);
+				}
+				echo '<div class="dropdown-divider"></div>';
+				echo '<h5 class="dropdown-header">Shop by Electronic</h5>';
+				echo "<a class='dropdown-item' href='store.php?Cat=PC'>PCs/Laptops</a>";
+				echo "<a class='dropdown-item' href='store.php?Cat=Tablet'>Tablets</a>";
+				echo "<a class='dropdown-item' href='store.php?Cat=Desktop'>Desktop Computers</a>";
+				echo "<a class='dropdown-item' href='store.php?Cat=Phone'>Landline Telephones</a>";
+				echo "<a class='dropdown-item' href='store.php?Cat=Celular'>Cell Phones</a>";
+				echo "<a class='dropdown-item' href='store.php?Cat=Security'>Security Systems</a>";
+				echo '<div class="dropdown-divider"></div>';
+				echo '<h5 class="dropdown-header">Shop by Product Type</h5>';
+				echo "<a class='dropdown-item' href='store.php?Type=Electronic'>Electronic Devices</a>";
+				echo "<a class='dropdown-item' href='store.php?Type=Hardware'>Hardware Pieces</a>";
+				echo "<a class='dropdown-item' href='store.php?Type=Software'>Electronic Software</a>";
+				echo "<a class='dropdown-item' href='store.php?Type=Accessory'>Accessories for your Devices</a>";
+				echo "<a class='dropdown-item' href='store.php?Type=Misc'>Other Products</a>";
+				echo "</div>";
+				echo "</li>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="about.php">About Us</a>';
+				echo "</li>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="contact.php">Contact Us</a>';
+				echo "</li>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="loggedin.php" >My Account</a>';
+				echo "</li>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="logout.php">Log Out</a>';
+				echo '</li>';
+				echo '</ul>';
 				break;
 				
 				case 'employee':
-				echo"<script>";
-				$dimensions = "$('nav').find('a').css('padding', '10px 10px 10px 10px');";
-				echo"$('nav').empty();";
-				echo"$('nav').append('<a href=\'employeehome.php\'>Customer Pages</a>');";
-				echo"$('nav').append('<a href=\'employeehome.php\'>Report Issue</a>');";
-				echo"$('nav').append('<a href=\'employeehome.php\'>View Orders</a>');";
-				echo"$('nav').append('<a href=\'employeehome.php\'>Assist Customers</a>');";
-				echo"$('nav').append('<a href=\'employeehome.php\'>Manage Store Inventory</a>');";
+				echo "<div class='row'>";
+				echo '<div class="col-sm-4"><a href="Home.php"><img src="Images/ClinicaIcon.png" style="width:65%;height50%;background-color:MediumPurple;" title="Clinica Celular" alt="Clinica Celular"/></a></div>';
+				echo '<div class="col-sm-4"><form action="store.php?action=search"><input class="search" type="text" name="SearchQuery" placeholder="Looking For Something? Find it Here" required autocomplete="false"/></form></div>';
+				echo "</div>";
+				echo '<ul class="nav nav-tabs justify-content-center navbar-dark bg-dark">';
+				echo '<li class="nav-item dropdown">';
+				echo '<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="">Customer Pages</a>';
+				echo '<div class="dropdown-menu">';
+				echo "<a class='dropdown-item' href='Home.php'>Home Page</a>";
+				echo "<a class='dropdown-item' href='repairshop.php'>Repair Services Page</a>";
+				echo "<a class='dropdown-item' href='store.php'>Ecommerce Shop Page</a>";
+				echo "<a class='dropdown-item' href='about.php'>About Company Page</a>";
+				echo "<a class='dropdown-item' href='contact.php'>Customer Contact Company Page</a>";
+				echo "<a class='dropdown-item' href='register.php'>Customer Registration Form</a>";
+				echo "<a class='dropdown-item' href='login.php'>Customer Login Form</a>";
+				echo "</div>";
+				echo "</li>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="systemreport.php">Report Issue</a>';
+				echo "</li>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="orders.php">View Customer Orders</a>';
+				echo "</li>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="contactposts.php" >Customer Questions</a>';
+				echo "</li>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="productinventory.php">Store Inventory</a>';
+				echo '</li>';
 				if(isset($_SESSION['admin'])) {
 					if($_SESSION['admin'] == true) {
-						echo"$('nav').append('<a href=\'employeehome.php\'>Admin Resources</a>');";
-					    $dimensions = "$('nav').find('a').css({'padding': '10px 9px 10px 9px', 'font-size': '137%'});";
+						echo '<li class="nav-item dropdown">';
+						echo '<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="">Admin Tools</a>';
+						echo '<div class="dropdown-menu">';
+						echo '<a class="dropdown-item" href="adminhub.php">View Detailed Information of Admin Tools</a>';
+						echo '<a class="dropdown-item" href="users.php">Manage Users On Site</a>';
+						echo '<a class="dropdown-item" href="keys.php">Update Site Keys</a>';
+						echo '<a class="dropdown-item" href="lockdown.php">Lockdown/Unlock Site</a>';
+						echo "</div>";
+						echo "</li>";
 					}
-					else
-						$dimensions = "$('nav').find('a').css('padding', '10px 10px 10px 10px');";
 				}
-				else
-					$dimensions = "$('nav').find('a').css('padding', '10px 10px 10px 10px');";
-				echo"$('nav').append('<a href=\'employeehome.php\'>My Account</a>');";
-				echo"$('nav').append('<a href=\'logout.php\'>Log Out</a>');";
-				echo $dimensions;
-				echo"</script>";
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="employeehome.php">My Account</a>';
+				echo '</li>';
+				echo '<li class="nav-item">';
+				echo '<a class="nav-link" href="logout.php">Log Out</a>';
+				echo '</li>';
+				echo '</ul>';
 				break;
 			}
 		}
+		else {
+			echo "<div class='row'>";
+			echo '<div class="col-sm-4"><a href="Home.php"><img src="Images/ClinicaIcon.png" style="width:65%;height50%;background-color:MediumPurple;" title="Clinica Celular" alt="Clinica Celular"/></a></div>';
+			echo '<div class="col-sm-4"><form action="store.php?action=search"><input class="search" onfocus="searchBarHelpText(this)" onfocusout="searchBarDefaultText(this)" type="text" name="SearchQuery" placeholder="Looking For Something? Find it Here" required autocomplete="false"/></form></div>';
+			echo '<div class="col-sm-4"><ul class="nav nav-tabs justify-content-center navbar-dark bg-dark"><li class="nav-item"><a class="nav-link" href="register.php?addon=hub">To Begin Your Shopping/Service Experience, Sign Up</a></li></ul></div>';			echo "</div>";
+			echo '<ul class="nav nav-tabs justify-content-center navbar-dark bg-dark">';
+			echo '<li class="nav-item">';
+			echo '<a class="nav-link" href="repairshop.php">Tech Services</a>';
+			echo '</li>';
+			echo '<li class="nav-item dropdown">';
+			echo '<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="">Online Tech Shop</a>';
+			echo '<div class="dropdown-menu" style="overflow-y:auto;">';
+			echo '<h5 class="dropdown-header">Shop All our Products</h5>';
+			echo "<a class='dropdown-item' href='store.php'>Our Full Inventory</a>";
+			echo '<div class="dropdown-divider"></div>';
+			echo '<h5 class="dropdown-header">Shop by Brand</h5>';
+			$brand_names = $con -> prepare('SELECT DISTINCT Brand FROM product');
+			$brand_names -> execute();
+			$brand_links = $brand_names -> fetchAll(PDO::FETCH_ASSOC);
+			for($i = 0; $i < sizeof($brand_links); $i++) {
+				printf("<a class='dropdown-item' href='store.php?Brand=%s'>%s</a>", $brand_links[$i]['Brand'], $brand_links[$i]['Brand']);
+			}
+			echo '<div class="dropdown-divider"></div>';
+			echo '<h5 class="dropdown-header">Shop by Electronic</h5>';
+			echo "<a class='dropdown-item' href='store.php?Cat=PC'>PCs/Laptops</a>";
+			echo "<a class='dropdown-item' href='store.php?Cat=Tablet'>Tablets</a>";
+			echo "<a class='dropdown-item' href='store.php?Cat=Desktop'>Desktop Computers</a>";
+			echo "<a class='dropdown-item' href='store.php?Cat=Phone'>Landline Telephones</a>";
+			echo "<a class='dropdown-item' href='store.php?Cat=Celular'>Cell Phones</a>";
+			echo "<a class='dropdown-item' href='store.php?Cat=Security'>Security Systems</a>";
+			echo '<div class="dropdown-divider"></div>';
+			echo '<h5 class="dropdown-header">Shop by Product Type</h5>';
+			echo "<a class='dropdown-item' href='store.php?Type=Electronic'>Electronic Devices</a>";
+			echo "<a class='dropdown-item' href='store.php?Type=Hardware'>Hardware Pieces</a>";
+			echo "<a class='dropdown-item' href='store.php?Type=Software'>Electronic Software</a>";
+			echo "<a class='dropdown-item' href='store.php?Type=Accessory'>Accessories for your Devices</a>";
+			echo "<a class='dropdown-item' href='store.php?Type=Misc'>Other Products</a>";
+			echo "</div>";
+			echo "</li>";
+			echo '<li class="nav-item">';
+			echo '<a class="nav-link" href="about.php">About Us</a>';
+			echo "</li>";
+			echo '<li class="nav-item">';
+			echo '<a class="nav-link" href="contact.php">Contact Us</a>';
+			echo "</li>";
+			echo '<li class="nav-item">';
+			echo '<a class="nav-link" href="register.php" >Register Account</a>';
+			echo "</li>";
+			echo '<li class="nav-item">';
+			echo '<a class="nav-link" href="login.php">Log In</a>';
+			echo '</li>';
+			echo '</ul>';
+		}
+	}
+	else {
+		echo "<div class='row'>";
+		echo '<div class="col-sm-4"><a href="Home.php"><img src="Images/ClinicaIcon.png" style="width:65%;height50%;background-color:MediumPurple;" title="Clinica Celular" alt="Clinica Celular"/></a></div>';
+		echo '<div class="col-sm-4"><form action="store.php?action=search"><input class="search" onfocus="searchBarHelpText(this)" onfocusout="searchBarDefaultText(this)" type="text" name="SearchQuery" placeholder="Looking For Something? Find it Here" required autocomplete="false"/></form></div>';
+		echo '<div class="col-sm-4"><ul class="nav nav-tabs justify-content-center navbar-dark bg-dark"><li class="nav-item"><a class="nav-link" href="register.php?addon=hub">To Begin Your Shopping/Service Experience, Sign Up</a></li></ul></div>';
+		echo "</div>";
+		echo "<br>";
+		echo '<ul class="nav nav-tabs justify-content-center navbar-dark bg-dark">';
+		echo '<li class="nav-item">';
+		echo '<a class="nav-link" href="repairshop.php">Tech Services</a>';
+		echo '</li>';
+		echo '<li class="nav-item dropdown">';
+		echo '<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="">Online Tech Shop</a>';
+		echo '<div class="dropdown-menu" style="overflow-y:auto;">';
+		echo '<h5 class="dropdown-header">Shop All our Products</h5>';
+		echo "<a class='dropdown-item' href='store.php'>Our Full Inventory</a>";
+		echo '<div class="dropdown-divider"></div>';
+		echo '<h5 class="dropdown-header">Shop by Brand</h5>';
+		$brand_names = $con -> prepare('SELECT DISTINCT Brand FROM product');
+		$brand_names -> execute();
+		$brand_links = $brand_names -> fetchAll(PDO::FETCH_ASSOC);
+		for($i = 0; $i < sizeof($brand_links); $i++) {
+			printf("<a class='dropdown-item' href='store.php?Brand=%s'>%s</a>", $brand_links[$i]['Brand'], $brand_links[$i]['Brand']);
+		}
+		echo '<div class="dropdown-divider"></div>';
+		echo '<h5 class="dropdown-header">Shop by Electronic</h5>';
+		echo "<a class='dropdown-item' href='store.php?Cat=PC'>PCs/Laptops</a>";
+		echo "<a class='dropdown-item' href='store.php?Cat=Tablet'>Tablets</a>";
+		echo "<a class='dropdown-item' href='store.php?Cat=Desktop'>Desktop Computers</a>";
+		echo "<a class='dropdown-item' href='store.php?Cat=Phone'>Landline Telephones</a>";
+		echo "<a class='dropdown-item' href='store.php?Cat=Celular'>Cell Phones</a>";
+		echo "<a class='dropdown-item' href='store.php?Cat=Security'>Security Systems</a>";
+		echo '<div class="dropdown-divider"></div>';
+		echo '<h5 class="dropdown-header">Shop by Product Type</h5>';
+		echo "<a class='dropdown-item' href='store.php?Type=Electronic'>Electronic Devices</a>";
+		echo "<a class='dropdown-item' href='store.php?Type=Hardware'>Hardware Pieces</a>";
+		echo "<a class='dropdown-item' href='store.php?Type=Software'>Electronic Software</a>";
+		echo "<a class='dropdown-item' href='store.php?Type=Accessory'>Accessories for your Devices</a>";
+		echo "<a class='dropdown-item' href='store.php?Type=Misc'>Other Products</a>";
+		echo "</div>";
+		echo "</li>";
+		echo '<li class="nav-item">';
+		echo '<a class="nav-link" href="about.php">About Us</a>';
+		echo "</li>";
+		echo '<li class="nav-item">';
+		echo '<a class="nav-link" href="contact.php">Contact Us</a>';
+		echo "</li>";
+		echo '<li class="nav-item">';
+		echo '<a class="nav-link" href="register.php" >Register Account</a>';
+		echo "</li>";
+		echo '<li class="nav-item">';
+		echo '<a class="nav-link" href="login.php">Log In</a>';
+		echo '</li>';
+		echo '</ul>';
 	}
 }
+/*function setRollEffectsProductIcon(string $rollOver, string $rollOut) {
+}*/
 ?>

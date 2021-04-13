@@ -1,6 +1,7 @@
+var formText = [];
 function formSetup() {
-	$("input").after("<br><br>");
-	$("form").find("a").after("<br>");
+	$("input, select").after("<br><br>");
+	$("form, label").find("a").after("<br>");
 	$("input").css("padding", "15px");
 	$("input[type=submit]").css("font-size", "150%");
 	$("input[type=text],input[type=email],input[type=tel],input[type=password]").click(function() {
@@ -14,4 +15,34 @@ function formSetup() {
 function fileUploadAction() {
 	if($("form").childElementCount === 1)
 		$("input[type=file]").submit();
+}
+function searchBarAction() {
+	if($("form").childElementCount === 1)
+		$("input[type=text]").submit();
+}
+function searchBarHelpText(searchBar) {
+	var placeholderStr = $(searchBar).attr('placeholder');
+	var strId = $(searchBar).attr('id');
+	var width = $(searchBar).width();
+	var height = $(searchBar).height();
+	height += 10;
+	width += 40;
+	formText.push([strId, placeholderStr]);
+	$(searchBar).attr('placeholder', 'Enter The Name or Item Code of the Product');
+	$(searchBar).width(width).height(height);
+}
+function searchBarDefaultText(searchBar) {
+	var placeholderStr = "";
+	var width = $(searchBar).width();
+	var height = $(searchBar).height();
+	height -= 10;
+	width -= 40;
+	for(var i = 0; i < formText.length; i++) {
+		if(formText[i][0] === $(searchBar).attr('id')) {
+			placeholderStr = formText[i][1];
+			break;
+		}
+	}
+	$(searchBar).attr('placeholder', placeholderStr);
+	$(searchBar).width(width).height(height);
 }

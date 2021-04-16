@@ -8,4 +8,6 @@ This project recently discontinued as of 4/13/2021 related to covid related debt
 1. Can create and log into accounts secured by encryption and account verification
 2. Can upload products and view them on the store page including product view which allows viewing of all images related to product in slideshow format
 3. Information about Company and Contact Info
-4. Functions for 
+4. Details about Services Provided in Both FAQ and Graphical Form
+5. Functions built to ensure an Admin Employee Account is always present as well as needed Apikey files
+6. Many more experimental and incomplete additions

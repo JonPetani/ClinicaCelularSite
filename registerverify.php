@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: In The Event The Customer Cannot Complete The Verification Email At Account Creation Time, Request The Verification Email By Providing Account Email Address
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -11,6 +16,7 @@
 </head>
 <body>
 <?php
+//If logged in already, leave page as account is already verified to be logged in
 require "PHPAssets/connect.php";
 require "PHPAssets/formtools.php";
 if(isset($_SESSION['logged'])) {
@@ -27,6 +33,7 @@ setAccountTabs($con);
 <main align=center>
 <br clear=both>
 <h1>Looks Like You Still Need Your Account Verified. Give Us Your Address and We Will Guide You Through The Process</h1>
+<!--Form To Input The Email Address, You Used To Create The Account Earlier-->
 <form action="sendemail.php" method="POST">
 <?php
 printError("loading", "Submission of Information Failed. Try Again.");

@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: New Product Upload Form To Add To Site Inventory
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -15,6 +20,7 @@ require "PHPAssets/connect.php";
 require "PHPAssets/formtools.php";
 require "PHPAssets/pagetools.php";
 require "PHPAssets/accounttools.php";
+//Checks If Uploader Is Employee
 if(!isset($_SESSION['CodeValue'])) {
 		session_destroy();
 		header("Location: employeeverify.php?error=employeeverifyfailed");
@@ -35,6 +41,7 @@ setAccountTabs($con);
 <main align=center>
 <br clear=both>
 <h1>Add a New Product to the Site</h1>
+<!--Product Upload Form-->
 <form action="inventoryupload.php" method="POST" enctype="multipart/form-data">
 <?php
 printError("loading", "Submission of Information Failed. Try Again.");
@@ -57,16 +64,19 @@ printError("price", "Invalid Price Input (Not Money Format)");
 printError("freeprice", "Set Price Is Way Too Low To Profit From. Check It Again");
 printError('profits', 'Check the numbers of price and cost again. Cost should not be more than our selling price.');
 ?>
+<!--Only Decimal Up To Hundredths Place Is Allowed-->
 <input name="Price" type="number" placeholder="How Much We Sell This Product For" required autocomplete="true" step="0.01"/>
 <?php 
 printError("quantity", "Quantity Value Invalid (Either Negative or Non Number)");
 ?>
+<!--Only Int Allowed-->
 <input name="Quantity" type="number" placeholder="How Much Of The Product We Got In Stock Now" required autocomplete="false" step="1"/>
 <?php 
 printError("upload", "File Upload Failed");
 printError("file", "Invalid File(s) found in the Set Provided. Check To Make Sure All Files Are Image Files");
 printError('limit', 'More Than 4 Files Uploaded. Server Image Upload Can Only Handle 4 at a Time.');
 ?>
+<!--Upload Up To 4 Images as Array. Array Size Is Checked Server Side-->
 <label for='Images[]'>Upload Images Of The Product. Maximum of 4 Allowed To Start For Quality Control and Server Limits.</label>
 <input name="Images[]" type="file" required autocomplete="false" multiple accept="image/*"/>
 <?php 
@@ -97,6 +107,7 @@ printError("cost", "Invalid Cost Input");
 printError("freecost", "The Cost Sounds Too Much of a Miracle To Be True. Check Your Source Again.");
 printError('profits', 'Check the numbers of price and cost again. Cost should not be more than our selling price.');
 ?>
+<!--Only Decimal Up To Hundredths Place Is Allowed-->
 <input name="Cost" type="number" placeholder="How Do The Distributers Charge Us For The Product Per Unit" required autocomplete="true" step="0.01"/>
 <?php 
 printError("included", "Quantity Value Invalid (Either Negative, Zero, or Non Number)");

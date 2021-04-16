@@ -1,3 +1,8 @@
+<!--
+Developer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Main Page for Repair Services. Goes Over Store Repair Services Acting As A Nav To Repair Services
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -34,6 +39,7 @@ setAccountTabs($con);
 <li data-target='#repair' data-slide-to='6'></li>
 <li data-target='#repair' data-slide-to='7'></li>
 </ul>
+<!-- repair service slideshow -->
 <div class='carousel-inner'>
 <div class='carousel-item active'><img src='Images/Prototypes/3ABRIL2020.jpg' style='width:100%;height:70%;' title='Service Image' alt='Repair Service Image 1'/></div>
 <div class='carousel-item'><img src='Images/Prototypes/5ABRIL2020.jpg' style='width:100%;height:70%;' title='Service Image' alt='Repair Service Image 2'/></div>
@@ -53,6 +59,7 @@ setAccountTabs($con);
 </div>
 <br>
 <h2>Find Repair Services By Device</h2>
+<!--repair services nav-->
 <div class='row' style='background-color: #007bff'>
 <div class='col-sm-3'><a href='services.php?device=android' onmouseover='collapseImageText(this)' onmouseout='unCollapseImageText(this)'><img src='Images/templates/android_firmware.png' style='width:75%;height:75%;padding-left:75px;' title='Android' alt='Android'><div class='collapse'><h3>Androids</h3></div></a></div>
 <div class='col-sm-3'><a href='services.php?device=iphone' onmouseover='collapseImageText(this)' onmouseout='unCollapseImageText(this)'><img src='Images/Cambiodsiplay.jpg' style='width:75%;height:75%;padding-left:75px;' title='IPhone' alt='IPhone'><div class='collapse'><h3>Iphones</h3></div></a></div>

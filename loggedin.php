@@ -1,6 +1,6 @@
 <!--
 Developer: Jonathan Petani
-Date: March 2020 - April 2021
+Date: April 2020 - April 2021
 Purpose: Customer Main Page Upon Logging In. Sends To Login Form If Credentials Input Are Wrong Or Link Is Reached Without Form Submission Of Login Form
 -->
 <?php

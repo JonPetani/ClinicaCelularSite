@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Customer Sign Up Page
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -24,6 +29,7 @@ setAccountTabs($con);
 <br>
 <h1>Create Account</h1>
 <?php
+//Sends To Customer Main Page If Your Already Logged In As One
 if(isset($_GET['addon'])) {
 	if(strcmp($_GET['addon'], 'hub') == 0) {
 		echo "<div class='container bg-info text-white justify-content-center'>";
@@ -33,6 +39,7 @@ if(isset($_GET['addon'])) {
 	}
 }
 ?>
+<!--Sign Up Form, Has PrintError Function Calls To Deal With Server Side POST Checks-->
 <form action="signedup.php" method="POST">
 <?php
 printError("loading", "Submission of Information Failed. Try Again.");
@@ -55,6 +62,7 @@ printError("address", "Address Format Is Incorrect (Correct Example: 450, taco r
 <?php 
 printError("zip", "Zipcode needs 5 digits");
 ?>
+<!--Phone Inputs Consider The Different Number Formats of Mexico -->
 <input class="form-control" name="MPhone" type="tel" placeholder="Mobile Phone Number (Required)" required autocomplete="false" pattern="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$"/>
 <?php 
 printError("mphone", "Number Format Incorrect (Correct Examples: 43-4553-3454 or 345-452-2943)");

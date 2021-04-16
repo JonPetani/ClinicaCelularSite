@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Once The First Employee Login Page is Complete, Employees Must Enter Their Own Individual Password
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -13,6 +18,7 @@
 require "PHPAssets/connect.php";
 require "PHPAssets/formtools.php";
 require "PHPAssets/pagetools.php";
+//Logged In Account Handler (Determine Where User Should Be Rerouted)
 if(isset($_SESSION['logged'])) {
 	if($_SESSION['logged'] == true) {
 		switch($_SESSION['type']) {
@@ -34,6 +40,7 @@ if(isset($_SESSION['logged'])) {
 		die;
 	}
 }
+//Check if Employee Site Code Matches with POST Input
 if($_SERVER['REQUEST_METHOD'] == "POST") {
 	$sql = $con -> prepare("SELECT * FROM sitecodes WHERE CodeName = :ecode");
 	$codename = "EmployeeCode";
@@ -47,6 +54,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 	$ecode_array = array('CodeValue' => $ecode['CodeValue']);
 	encryptSet($ecode_array, $con);
 }
+//If User Inserts Wrong Employee Password This Code Keeps User From Being Sent Back To The First Login Page
 else {
 	if(isset($_SESSION['CodeValue'])) {
 		$sql = $con -> prepare("SELECT * FROM sitecodes WHERE CodeValue = :ecode");
@@ -72,6 +80,7 @@ setAccountTabs($con);
 </div>
 <div class='container bg-primary text-white'>
 <h1>Employee Verification Successful. Simply enter your Employee information to get access to your Account</h1>
+<!--Form To Insert The Employee's Personal Password-->
 <form action="employeehome.php" method="POST">
 <?php
 printError("password", "Wrong Password");

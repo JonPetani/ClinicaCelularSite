@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Login Form for Customers
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -14,6 +19,7 @@
 require "PHPAssets/connect.php";
 require "PHPAssets/formtools.php";
 require "PHPAssets/pagetools.php";
+//Send To Customer Page if Logged in Already
 if(isset($_SESSION['logged'])) {
 	if(strcmp($_SESSION['logged'], 'loggedin') == 0) {
 		header("Location: loggedin.php");
@@ -23,6 +29,7 @@ if(isset($_SESSION['logged'])) {
 if(isset($_GET['action'])) {
 	switch($_GET['action']) {
 		case 'verify':
+		//Send User Their Login Info If They Went Through Account Recovery
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$sql = $con -> prepare("SELECT * FROM customer WHERE EmailAddress = :email");
 			$sql -> bindParam(':email', $_GET['account']);
@@ -50,6 +57,7 @@ setAccountTabs($con);
 <main align=center>
 <br clear=both>
 <h1>Log In</h1>
+<!--Login Form-->
 <form action="loggedin.php" method="POST">
 <?php
 printError("loading", "Submission of Information Failed. Try Again.");
@@ -65,6 +73,7 @@ if(isset($verified)) {
 	}
 }
 ?>
+<!--Just need to remember 1 of 3 of the main account identifiers for Login-->
 <input name="Uname" type="text" placeholder="Enter Your Email Address or Phone Number (Mobile or Landline)" required autocomplete="false"/>
 <input name="Password" type="password" placeholder="Enter Your Password" required autocomplete="false"/>
 <label for="keepOn">Keep Me Signed In</label>

@@ -1,10 +1,20 @@
 <?php
+/* 
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Utility Functions used in many PHP Files on the Site
+*/
+
+//Page Error Message
+//Print Error Message With Text and Stop Page Contents To Showcase Error and Restrict Viewing
 function errorPageDisplay(string $reason) {
 	echo "<div id='Error'>";
 	printf("<p>%s</p>", $reason);
 	echo "</div>";
 	die;
 }
+
+//Edit Button Text and Format
 function changeButton(string $returncode, string $button, string $buttontxt) {
 	if(isset($_GET['return'])) {
 		if(strcmp($_GET['return'], $returncode) == 0) {
@@ -14,6 +24,8 @@ function changeButton(string $returncode, string $button, string $buttontxt) {
 		}
 	}
 }
+
+//Decrypt Encrypted Session Data (Called For Each Reveal Of Encrypted Data)
 function decryptDisplay(string $field, object $con) {
 	if(!isset($_SESSION['CipherKey']) or !isset($_SESSION['IVLength']) or !isset($_SESSION['tags'])) {
 		session_destroy();
@@ -32,6 +44,7 @@ function decryptDisplay(string $field, object $con) {
 			die;
 		}
 	}
+	//Search For Needed Session Variable Using Function Parameter (Especially Needed For Password Use Case)
 	$arr_key = array_search($field, $_SESSION, false);
 	if(strcmp($arr_key, "Password") == 0) {
 		$account = decryptDisplay($_SESSION['EmailAddress'], $con);
@@ -57,6 +70,7 @@ function decryptDisplay(string $field, object $con) {
 		$ptest -> bindParam(':acc', $account);
 		$ptest -> execute();
 		$pword = $ptest -> fetch(PDO::FETCH_ASSOC);
+		//Only Reveal Password Value From DB if it Matches with the Password Hash From Encrypt
 		$is_password = password_verify($pword['Password'], $_SESSION['Password']);
 		if($is_password == false) {
 			session_destroy();
@@ -67,15 +81,20 @@ function decryptDisplay(string $field, object $con) {
 			return $pword['Password'];
 		}	
 	}
+	//Returns Decrypted Value (If You Didn't Encrypt Properly The Information Is Safe From Viewing By Undesired Eyes)
 	$method = "aes-256-gcm";
 	return openssl_decrypt($field, $method, $_SESSION['CipherKey'], OPENSSL_RAW_DATA, $_SESSION['IVLength'], $_SESSION['tags'][$arr_key]);
 }
+
+//Useful When A Random String Is Needed (Used Mainly For Encryption And Selecting Verification Code For Email + SMS)
 function randomCodeGenerator(int $size_min, int $size_max) {
 	$str = "";
 	for($i = 0; $i < random_int($size_min, $size_max); $i++)	
 		$str = $str . chr(random_int(48, 122));
 	return $str;
 }
+
+//Encrypt A Entire Set of Session Data
 //Requires Assosiative Array To Work
 function encryptSet(array $user_data, object $con) {
 	if(!isset($_POST['Code'])) {
@@ -90,18 +109,23 @@ function encryptSet(array $user_data, object $con) {
 			die;
 		}
 	}
+	//Used Cipher Method
 	$method = "aes-256-gcm";
+	//IV
 	if(!isset($_SESSION['CipherKey']) or !isset($_SESSION['IVLength'])) {
 		$_SESSION['CipherKey'] = openssl_digest(randomCodeGenerator(12, 16), 'sha256', true);
 		$_SESSION['IVLength'] = openssl_random_pseudo_bytes(openssl_cipher_iv_length($method));
 	}
+	//Array of Tags For Each Encryption
 	if(!isset($_SESSION['tags']))
 		$_SESSION['tags'] = array();
 	foreach($user_data as $account_fields => $value) {
 		if(is_string($value)) {
+			//For Password Session Vars
 			if(preg_match("^.*Password.*$^", $account_fields) != 0)
 				$_SESSION[$account_fields] = password_hash($value, PASSWORD_DEFAULT);
 			else {
+				//For Other Vars Except Boolean
 				$tag_set['tags'][$account_fields] = "";
 				$_SESSION[$account_fields] = openssl_encrypt($value, $method, $_SESSION['CipherKey'], OPENSSL_RAW_DATA, $_SESSION['IVLength'], $_SESSION['tags'][$account_fields], '', 16);
 			}
@@ -111,6 +135,9 @@ function encryptSet(array $user_data, object $con) {
 	}
 	return true;
 }
+
+//Set Header Based On Account Type (Customer, Default User, Employee, and Employee with Admin Priveleges)
+//Includes Header Logo, Nav Bar, and SearchBar (Footer Is Seen At Bottom of Each PHP Page File)
 function setAccountTabs(object $con) {
 	if(isset($_SESSION['logged']) and isset($_SESSION['type'])) {
 		if(strcmp($_SESSION['logged'], 'loggedin') == 0) {

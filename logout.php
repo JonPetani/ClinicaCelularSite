@@ -1,4 +1,9 @@
 <?php
+/*
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Logout The User Regardless of Account Type
+*/
 require "PHPAssets/connect.php";
 if(isset($_SESSION['type']) or isset($_SESSION['CodeValue'])) {
 	switch($_SESSION['type']) {
@@ -18,6 +23,7 @@ if(isset($_SESSION['type']) or isset($_SESSION['CodeValue'])) {
 	header("Location: " . $destination);
 	die;
 }
+//Do Default Logout If Sesson Info Doesnt Fit The Site
 else {
 	session_destroy();
 	header("Location: register.php?error=bug");

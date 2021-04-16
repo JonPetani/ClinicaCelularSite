@@ -1,3 +1,8 @@
+<!--
+Developer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Main Page of Web App. Introduces To The Site.
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -23,6 +28,7 @@ setAccountTabs($con);
 <br>
 <h1>Welcome to Clinica Celular</h1>
 <p>We are a Electronic Repair Shop that also sells Electronics related Products.</p>
+<!-- Main Page Slideshow -->
 <h2>No Matter What the Issue is, We have a Solution To The Problem</h2>
 <div id='repair' class='carousel slide' data-ride='carousel'>
 <ul class='carousel-indicators'>
@@ -50,6 +56,7 @@ setAccountTabs($con);
 <span class="carousel-control-next-icon"></span>
 </a>
 </div>
+<!--Planned Linked Categories-->
 <br>
 <h2>Biggest Deals</h2>
 <h2>What Just Came In</h2>

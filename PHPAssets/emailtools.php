@@ -1,12 +1,22 @@
 <?php
+/*
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Functions For Communication From Site To Users
+*/
 require "PHPAssets/dir.php";
+//To Send SMS Text To User
 function sendText(string $message, string $mobile_num, object $con) {
+	//make sure Apikeys can be accessed
 	validateApikeyAccess();
+	//Check message and number for errors
 	if(empty($message) or empty($mobile_num) or preg_match('^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$^' ,$mobile_num) == 0)
 		return false;
+	//get IPStack Apikey
 	$fp = fopen("ImportantStuff/apikeystack.txt", 'r');
 	$apikey = fgets($fp);
 	fclose($fp);
+	//Get User IP To Find Country of Service
 	if(!empty($_SERVER['HTTP_CLIENT_IP']))
 		$ip_address = $_SERVER['HTTP_CLIENT_IP'];
 	else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -15,11 +25,13 @@ function sendText(string $message, string $mobile_num, object $con) {
 	}
 	else
 		$ip_address = $_SERVER['REMOTE_ADDR'];
+	//Use IPStack API To Match IP To Country
 	$request = curl_init("http://api.ipstack.com/check?access_key=" . $apikey . '');
 	curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
 	$get_location = curl_exec($request);
 	curl_close($request);
 	$country = json_decode($get_location);
+	//Map Country To Country Code
 	switch($country->country_code) {
 		case "MX":
 			$country_code = "+52";
@@ -31,15 +43,18 @@ function sendText(string $message, string $mobile_num, object $con) {
 		default: 
 			return "No IP Found";
 	}
+	//Append Country Code to Mobile Number To Send Text
 	$number = $country_code . $mobile_num;
 	$text_fields = array(
 		'apikey' => $apikey,
 		'body' => $message,
 		'to' => $number
 	);
+	//get Elastic Email Apikey
 	$fp = fopen("ImportantStuff/apikeyelastic.txt", 'r');
 	$apikey = fgets($fp);
 	fclose($fp);
+	//Send Curl Request to Send SMS With Needed Parameters
 	$request = curl_init();
 	$url = "https://api.elasticemail.com/v2/sms/send";
 	curl_setopt($request, CURLOPT_URL, $url);
@@ -54,13 +69,17 @@ function sendText(string $message, string $mobile_num, object $con) {
 	curl_close($request);
 	return true;
 }
+//Send HTML Email To User
 function sendEmail(string $sender, string $htmlbody, string $recipient, string $subject) {
+	//check Inputs for Errors
 	if(preg_match("^.*@.*$^", $sender) == 0 or preg_match("^.*@.*$^", $recipient) == 0 or empty($htmlbody) or empty($subject))
 		return false;
 	validateApikeyAccess();
+	//get Elastic Email Apikey
 	$fp = fopen("ImportantStuff/apikeyelastic.txt", "r");
 	$apikey = fgets($fp);
 	fclose($fp);
+	//Send Email Curl Request With Needed Parameters and Settings
 	$request = curl_init();
 	$url = "https://api.elasticemail.com/v2/email/send";
 	$email_fields = array(
@@ -85,6 +104,7 @@ function sendEmail(string $sender, string $htmlbody, string $recipient, string $
 	curl_close($request);
 	return true;
 }
+//Verify Email Address Belongs To Account Before Sending To Avoid Exploitation of Email Send
 function verifyAddress(string $address, object $con) {
 	$sql = $con -> prepare("SELECT * FROM customer WHERE EmailAddress = :email");
 	$sql -> bindParam(":email", $address);

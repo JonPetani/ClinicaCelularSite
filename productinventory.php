@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: View All Products on Website as well as options to Edit or Delete Them
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -14,6 +19,7 @@ require "PHPAssets/pagetools.php";
 require "PHPAssets/accounttools.php";
 require "PHPAssets/formtools.php";
 require 'PHPAssets/submissiontools.php';
+//Check If Editor/Viewer Is Employee
 if(!isset($_SESSION['CodeValue'])) {
 		session_destroy();
 		header("Location: employeeverify.php?error=employeeverifyfailed");
@@ -26,8 +32,10 @@ if(!isset($_SESSION['Password'])) {
 $verify_array = array("CodeValue" => decryptDisplay($_SESSION['CodeValue'], $con), "Password" => decryptDisplay($_SESSION['Password'], $con));
 isEmployee($con, $verify_array);
 unset($verify_array);
+//Edit and Delete Functions of Page
 if(isset($_GET['action']) and isset($_GET['product'])) {
 	switch($_GET['action']) {
+		//Delete Product Assuming It Exists
 		case 'delete':
 		$sql = $con -> prepare("SELECT * FROM product WHERE ProductName = :delname");
 		$sql -> bindParam(':delname', $_GET['product']);
@@ -39,7 +47,7 @@ if(isset($_GET['action']) and isset($_GET['product'])) {
 		$sql -> execute();
 		printInfo("delete", "Product Deleted Successfully");
 		break;
-		
+		//Edit Product Assuming It Exists And Requirements of editproject.php Form are Met
 		case 'edit':
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$sql = $con -> prepare("SELECT * FROM product WHERE ProductName = :editname");
@@ -48,7 +56,10 @@ if(isset($_GET['action']) and isset($_GET['product'])) {
 			if($sql->rowCount() == 0)
 				errorPageDisplay("Product Does Not Exist In Our System. Make Sure URL Matches That of The Link. Otherwise, Report to a Co-Worker Working On This Site. If You Are One Of These, You Know What To Do.");
 			$old_info = $sql -> fetch(PDO::FETCH_ASSOC);
+			//Build Edit Query
 			$base_query = "UPDATE product SET ";
+			//If Edit Was Made In Edit Form, Append Items To Edit Query String as Needed
+			//Each Uses Server Side Check of POST data
 			if(strcmp($_POST['Name'], "") != 0) {
 				if(strlen($_POST['Name']) < 14) {
 					header('Location: editproduct.php?error=name&product=' . $_GET['product']);
@@ -152,6 +163,7 @@ if(isset($_GET['action']) and isset($_GET['product'])) {
 					$base_query = $base_query . ", ";
 				$base_query = $base_query . "InPackage = :inpack";
 			}
+			//Put Query String and Execute Query Based On Each Needed Piece That Has Been Appended
 			$base_query = $base_query . " WHERE ProductName = :prod";
 			$sql = $con -> prepare($base_query);
 			if(strpos($base_query, "ProductName = :name") != false)
@@ -192,6 +204,7 @@ setAccountTabs($con);
 <p>View the List below first and review it against what company documents or you see as the actual stock of item(s)</p>
 <br>
 <p>Below Is our current product list with the price and quantity in stock noted. If a item is no longer offered at the company or info is incorrect you can edit it directly:</p>
+<!--Table of Products In Site Iventory-->
 <table class='data'>
 <?php
 $sql = $con -> prepare("SELECT * FROM product");
@@ -200,6 +213,7 @@ if($sql -> rowCount() > 0 ) {
 $products = $sql -> fetchAll(PDO::FETCH_ASSOC);
 	for($i = 0; $i < sizeof($products);) {
 		echo"<tr>";
+		//Print Each DB Column Per DB Row
 		for($j = 0; $j < 5; $j++) {
 			echo"<td>";
 			printf("<p>Product Name: %s</p>", $products[$i]['ProductName']);
@@ -214,6 +228,7 @@ $products = $sql -> fetchAll(PDO::FETCH_ASSOC);
 			printf("<p>Electronic That Is For: %s</p>", $products[$i]['Category']);
 			printf("<p>Type Of Product That It Is: %s</p>", $products[$i]['ProductType']);
 			echo"<p>Images Uploaded For This Product: </p>";
+			//Print Entire Set of Images
 			$image_set = explode(" ", $products[$i]['ProductImage']);
 			print_r($image_set);
 			foreach($image_set as $image_url) {
@@ -221,7 +236,9 @@ $products = $sql -> fetchAll(PDO::FETCH_ASSOC);
 				printf("<img src='%s' style='%s' title='Image View Of %s' alt='Placeholder Text For %s Product'/>", $image_url, $dimensions, $products[$i]['ProductName'], $products[$i]['ProductDescription']);
 			}
 			echo"<br clear=both>";
+			//Link To Edit Product Form
 			printf("<a href='editproduct.php?product=%s' style='float:left;'>&#9986; Edit Product</a>", $products[$i]['ProductName']);
+			//Link To Delete Product
 			printf("<a href='productinventory.php?action=delete&product=%s&info=delete' style='float:left;'>&#9746; Delete Product</a>", $products[$i]['ProductName']);
 			echo"<br clear=both>";
 			printError('missing', 'Missing URL Info. Make Sure URL Matches That of The Link. Otherwise, Report to a Co-Worker Working On This Site. If You Are One Of These, You Know What To Do.');
@@ -235,6 +252,7 @@ $products = $sql -> fetchAll(PDO::FETCH_ASSOC);
 		echo"</tr>";
 	}
 }
+//If Product DB Table Is Empty
 else {
 	echo"Currently No Products are Listed as none have been uploaded. Take care of this below by adding them.";
 }
@@ -243,12 +261,14 @@ else {
 <br>
 <p>If something is missing from the inventory you can add a item manually or if there are multiple items missing you can upload a file.</p>
 <div class='selector'>
+<!--Option To Upload Multiple Products Using File-->
 <form action="inventoryupload.php" enctype="multipart/form-data" multiple method="POST">
 <?php
 printError("nosubmit", "File(s) Not Submitted");
 ?>
 <input type="file" name="ProductList" required autocomplete="false">Upload Document(s) Here</input>
 </form>
+<!--Link to Product Upload/Insertion Form-->
 <a href="productupload.php">Or Insert A Product Manually Here</a>
 </div>
 <br clear=both>

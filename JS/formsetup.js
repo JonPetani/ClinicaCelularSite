@@ -1,4 +1,13 @@
+/*
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Javascript Functions For Form Tags On The Site
+*/
+
+//Form Rollover Placeholder Text Array
 var formText = [];
+
+//Setup Form Styling
 function formSetup() {
 	$("input, select").after("<br><br>");
 	$("form, label").find("a").after("<br>");
@@ -12,14 +21,20 @@ function formSetup() {
 	});
 	$("input").siblings("p").css({"font-size": "85%", "color": "#fc3019", "font-family": "'Barlow Semi Condensed', sans-serif"});
 }
+
+//Submit Form Directly Upon File Selection
 function fileUploadAction() {
 	if($("form").childElementCount === 1)
 		$("input[type=file]").submit();
 }
+
+//Submit Form Directly Upon Pressing Enter
 function searchBarAction() {
 	if($("form").childElementCount === 1)
 		$("input[type=text]").submit();
 }
+
+//Change Input Tag Placeholder Text Upon Rollover
 function searchBarHelpText(searchBar) {
 	var placeholderStr = $(searchBar).attr('placeholder');
 	var strId = $(searchBar).attr('id');
@@ -31,6 +46,8 @@ function searchBarHelpText(searchBar) {
 	$(searchBar).attr('placeholder', 'Enter The Name or Item Code of the Product');
 	$(searchBar).width(width).height(height);
 }
+
+//Swap Input Tag Placeholder Text To The Original Line
 function searchBarDefaultText(searchBar) {
 	var placeholderStr = "";
 	var width = $(searchBar).width();

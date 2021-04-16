@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: If Employee forgets Employee Code or is Changed They can request the New One Through The Account Recovery Process
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -13,6 +18,7 @@
 <?php
 require "PHPAssets/connect.php";
 require "PHPAssets/formtools.php";
+//Create Error Message If User is Logged To Warn About Going Here, Otherwise Bring to Default Login
 if(isset($_SESSION['logged'])) {
 	switch($_SESSION['type']) {
 		case 'customer':
@@ -36,9 +42,12 @@ setAccountTabs($con);
 <main align=center>
 <br clear=both>
 <?php
+//Print Appropriate Restriction Message and Stop Page Loadout
 if(isset($block))
 	errorPageDisplay($block);
 ?>
+<!--Employee Email Verify Form-->
+<!--Employee Enters Their Company Email Address-->
 <h1>Looks Like You Still Need Your Account Verified. Give Us Your Address and We Will Guide You Through The Process</h1>
 <form action="sendemail.php" method="POST">
 <?php

@@ -1,3 +1,8 @@
+<!--
+Developer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: E-Commerce Main Page. Contains All Products You Could Purchase On The Site Allowing User To Filter Results
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -23,6 +28,7 @@ setAccountTabs($con);
 <?php printError("noproduct", "Product Information Loading Failed. Either URL was damaged or db failed. Please Try Again Using The Original Link or Contact Support.");?>
 <div id='search' class='storepage' style="float:left;width:35%;">
 <?php printError("tag", "Search Query Failed. Make sure URL isn't altered from what the link goes to. Otherwise, report the error to tech support.");?>
+<!--Planned Searchbar-->
 <h4>Search By Name</h4>
 <form action='store.php?action=search'>
 <input type='text' name='SearchQuery' id='sortbar' onfocus='searchBarHelpText(this)' onfocusout='searchBarDefaultText(this)' placeholder='Find a Product' required autocomplete='false'>
@@ -31,6 +37,7 @@ setAccountTabs($con);
 searchBarAction();
 </script>
 <br>
+<!--Beggining of Filter By Link (Set Filters Are Marked By Check)-->
 <h4>Search By Electronic</h4>
 <?php
 $category_links = array('PC', 'Tablet', 'Desktop', 'Phone', 'Celular', 'Security');
@@ -162,6 +169,7 @@ for($i = 0; $i < sizeof($brand_links); $i++) {
 		
 	}
 }*/
+//Add GET Parameters to PDO Query
 if(isset($_GET['Cat'])) {
 	if(!empty($_GET['Cat']))
 		$category = $_GET['Cat'];
@@ -174,6 +182,7 @@ if(isset($_GET['Brand'])) {
 	if(!empty($_GET['Brand']))
 		$brand = $_GET['Brand'];
 }
+//Build Query String
 $query_str = "SELECT * FROM product";
 
 if(isset($category)) {
@@ -206,6 +215,7 @@ if(isset($brand))
 	$product -> bindParam(':brand', $brand);
 $product -> execute();
 $pcount = $product -> rowCount();
+//Set Product Range Based on GET Parameter and Products Available (52 Available Products Per Page)
 if($pcount > 52) {
 	if(!isset($_GET['Range'])) {
 		$query_str = $query_str . " LIMIT 0 52";
@@ -224,6 +234,7 @@ if($pcount > 52) {
 	$product -> execute();
 }
 $items = $product -> fetchAll(PDO::FETCH_ASSOC);
+//Setup Product View Table (4 Products Per Row)
 for($i = 0; $i < sizeof($items);) {
 	echo "<tr>";
 	for($j = 0; $j < 4; $j++) {
@@ -262,6 +273,7 @@ for($i = 0; $i < sizeof($items);) {
 <div id="ShopNav" align=center>
 <?php
 $base_url = 'store.php';
+//Build Page Indexes
 if(isset($_GET['Cat'])) {
 	if(strpos($base_url, '?') == false)
 		$base_url = $base_url . "&Cat=" . $_GET['Cat'];
@@ -281,6 +293,7 @@ if(isset($_GET['Brand'])) {
 		$base_url = $base_url . "?Brand=" . $_GET['Brand'];
 }
 $total = round($pcount / 52) + 1;
+//If there are more than 52 Products in DB Set The Appropriate Page Range Depending On Current Place Determined By GET Range Parameter
 if(isset($_GET['Range'])) {
 	if(intval($_GET['Range']) > 0) {
 		if(strpos($base_url, '?') == false)

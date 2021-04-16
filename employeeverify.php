@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: First Page On Process To Login Employees, Only Employees Would Be Able To Have Access To The Site Code
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -16,6 +21,7 @@ require "PHPAssets/formtools.php";
 require "PHPAssets/dir.php";
 if(isset($_GET['action'])) {
 	switch($_GET['action']) {
+		//if you go through site code access process, it displays using this code
 		case 'verify':
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$sql = $con -> prepare("SELECT * FROM employee WHERE EmailAddress = :email");
@@ -33,6 +39,7 @@ if(isset($_GET['action'])) {
 }
 $verify_code = getEmployeeCodeAccess($con);
 unset($verify_code);
+//built in build statement to ensure admin is always in system incase they is no one listed
 adminPopulate($con);
 ?>
 <div class="container" style='background-color:CornFlowerBlue;'>
@@ -46,6 +53,7 @@ setAccountTabs($con);
 <h2>This Page and Points Beyond Are Restricted to Employees</h2>
 <p>Is protected by a security code. If you forgot it and didn't take note of it, press the button below to have it sent to your company email. Also check your inbox for possible changes in the code.</p>
 </div>
+<!--Employee Site Code Input Form-->
 <form action="employeelogin.php" class='bigform' method="POST">
 <?php
 printInfo("emailsent", "Recovery Email Sent");

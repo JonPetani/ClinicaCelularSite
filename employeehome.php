@@ -1,15 +1,22 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Employee's Main Page Upon Successful Login While Also Being The Page That Logs The User In
+-->
 <?php
 require "PHPAssets/connect.php";
 require "PHPAssets/pagetools.php";
 require "PHPAssets/accounttools.php";
 require "PHPAssets/formtools.php";
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
+	//If The Site Code Login Wasn't Even Done, Send User There
 	if(!isset($_SESSION['CodeValue'])) {
 		session_destroy();
 		header("Location: employeeverify.php?error=employeeverifyfailed");
 		die;
 	}
 	$verify_array = array("CodeValue" => decryptDisplay($_SESSION['CodeValue'], $con));
+	//Verify if Account Is Valid
 	isEmployee($con, $verify_array);
 	unset($verify_array);
 	$sql = $con -> prepare("SELECT * FROM employee WHERE Password = :pass");
@@ -19,12 +26,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		header("Location: employeelogin.php?error=password");
 		die;
 	}
+	//Encrypt Employee Account Session
 	$employee = $sql -> fetch(PDO::FETCH_ASSOC);
 	$_SESSION['logged'] = 'loggedin';
 	$_SESSION['type'] = 'employee';
 	$encrypt = encryptSet($employee, $con);
 }
 else {
+	//If Entering Page After Logging In
 	if(!isset($_SESSION['CodeValue'])) {
 		session_destroy();
 		header("Location: employeeverify.php?error=employeeverifyfailed");
@@ -57,10 +66,12 @@ setAccountTabs($con);
 <h1> All Set <?php echo decryptDisplay($_SESSION['FirstName'], $con);?></h1>
 <p>Now that your signed in, get to work.</p>
 <?php
+//Signals If Admin Login is Successful
 if(isset($_SESSION['admin'])) {
 	if($_SESSION['admin'] === true)
 		printInfo('adminlogged', "Admin Login Sucessful");
 }
+//Creates Admin Login Form that Admin Users Can Login Through For Special Privileges (Uses Their Individual Admin Password)
 if(isset($_SESSION['AdminPassword'])) {
 	if(!empty($_SESSION['AdminPassword'])) {
 		if(!isset($_SESSION['admin'])) {

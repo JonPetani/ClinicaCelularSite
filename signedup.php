@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Sends The Verification Email And Alerts User To Check Their Inbox Upon Successful Registration (Checks Input And Creates DB Entry of Customer)
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -16,6 +21,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$sql -> bindParam(":phonemobile", $_POST['MPhone']);
 	$sql -> bindParam(":phonelandline", $_POST['LPhone']);
 	$sql -> execute();
+	//Check POST Vars Server Side
 	if($sql -> rowCount() > 0) {
 		header("Location: register.php?error=duplicate");
 		die;
@@ -54,6 +60,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		header("Location: register.php?error=zip");
 		die;
 	}
+	//Check Password To See If It Meets Site Requirements
 	$hasUpper = false;
 	$hasLower = false;
 	$hasNum = false;
@@ -80,6 +87,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$emailList = false;
 	else
 		$emailList = true;
+	//Insert New Customer Into DB
 	$sql = $con -> prepare("INSERT INTO customer (FirstName, LastName, Password, EmailAddress, Phone, MobilePhone, ZipCode, Address, KeepLoggedIn, EmailList, VerifiedAccount) VALUES (:First, :Last, :Password, :Email, :LPhone, :MPhone, :zipCode, :Address, :keepLoggedIn, :emailList, :verify)");
 	$sql -> bindParam(":First", $_POST['First']);
 	$sql -> bindParam(":Last", $_POST['Last']);
@@ -94,11 +102,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$verified = false;
 	$sql -> bindParam("verify", $verified);
 	$sql -> execute();
+	//Beginning of Account Verification Code
+	//Verification Code
 	$vcode = randomCodeGenerator(20, 30);
 	$codeset = $con -> prepare("UPDATE customer SET VerifyCode = :vc WHERE MobilePhone = :mp");
 	$codeset -> bindParam(":vc", $vcode);
 	$codeset -> bindParam(":mp", $_POST['MPhone']);
 	$codeset -> execute();
+	//The HTML The Email Will Have Based On Template
 	$html_body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
@@ -394,7 +405,9 @@ body {font-family: \'Muli\', sans-serif;}
     
   
 </body></html>';
+	//Subject Line of Email
 	$subject = "Verify Account For " . $_POST['First'] . " " . $_POST['Last'] . " At Clinica Celular";
+	//Current Company Email That Will Send It
 	$sender = "dereisengott@gmail.com";
 	sendEmail($sender, $html_body, $_POST['Email'], $subject, $con);
 	//For Future When SMS Service Provider is Chosen
@@ -422,6 +435,7 @@ setAccountTabs($con);
 <!--<form method="post">
 <input type="submit" name="Send Email"/>
 </form>-->
+<!--If API Fails To Send Message, Request A New Email-->
 <a href="registerverify.php" align=center id="sms">Send Verification Email Now<!--Send SMS Text Verification Now--></a>
 <?php
 changeButton("verify", "email", "Send Email Again");

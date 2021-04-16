@@ -1,7 +1,14 @@
 <?php
+/*
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Stores and Sorts When and Which Email Information (including message html body, and email header) Is Used with The sendEmail Function in emailtools
+*/
 require "PHPAssets/connect.php";
 require "PHPAssets/pagetools.php";
 require "PHPAssets/emailtools.php";
+//Requires a POST request from one of the forms
+//The Button of the Form will Contain the String Code to Determine which Switch Case is Used
 if($_SERVER['REQUEST_METHOD'] == "POST") {
 	switch($_POST['EmailButton']) {
 		case "Send Verification Email Now":
@@ -10,6 +17,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 			header("Location: registerverify.php?error=email");
 			die;
 		}
+		//Verification Code Needed To Verify Customer Account
+		//Will be Uploaded To DB To compare later at Verification Time
 		$verify_code = randomCodeGenerator(20, 30);
 		$sql = $con -> prepare("UPDATE customer SET VerifyCode = :code WHERE EmailAddress = :email");
 		$sql -> bindParam(":code", $verify_code);
@@ -19,6 +28,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 		$sql -> bindParam(":email", $_POST['Email']);
 		$sql -> execute();
 		$user_info = $sql -> fetch(PDO::FETCH_ASSOC);
+		//Html Body of Verifcation Email
 		$html_body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
@@ -314,7 +324,9 @@ body {font-family: \'Muli\', sans-serif;}
     
   
 </body></html>';
+		//Email Subject
 		$subject = "Verify Account For " . $user_info['FirstName'] . " " . $user_info['LastName'] . " At Clinica Celular";
+		//Email Sender
 		$sender = "dereisengott@gmail.com";
 		sendEmail($sender, $html_body, $_POST['Email'], $subject, $con);
 		header("Login.php?error=emailsent");
@@ -335,6 +347,7 @@ body {font-family: \'Muli\', sans-serif;}
 		$sql -> bindParam(":email", $_POST['Email']);
 		$sql -> execute();
 		$user_info = $sql -> fetch(PDO::FETCH_ASSOC);
+		//Html Body of Employee Account Recovery
 		$html_body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
@@ -625,7 +638,9 @@ body {font-family: \'Muli\', sans-serif;}
     
   
 </body></html>';
+		//Email Subject
 		$subject = "Recover Account For  Clinica Celular Employee " . $user_info['FirstName'] . " " . $user_info['LastName'];
+		//Email Sender
 		$sender = "dereisengott@gmail.com";
 		sendEmail($sender, $html_body, $_POST['Email'], $subject, $con);
 		header("employeeverify.php?info=emailsent");

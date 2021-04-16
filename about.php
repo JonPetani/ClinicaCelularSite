@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: About Page For The Company, Contains Detailed List and Informative Images
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -22,6 +27,7 @@ setAccountTabs($con);
 <div class='container bg-primary text-white'>
 <br>
 <h1>About Clínica Celular</h1>
+<!-- First About List -->
 <dl>
 <dt>
 ¿Quienes somos?
@@ -34,6 +40,7 @@ Somos una empresa con más de 16 años de experiencia en el campo de la reparaci
 <img src='Images/placeholder_front_page.jpg' style='width:55%;height:55%;' alt='Who We Are' title='Who We Are'/>
 </div>
 <h2>FAQ</h2>
+<!-- Second About List (Divided Between Detailed List Column and Image Column) -->
 <dl>
 <div class='row'>
 <div class='col-sm-8'>

@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Edit Product Information of A Product In Site Inventory. Form Is Identical To productupload.php except label and placeholder text
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -15,6 +20,7 @@ require "PHPAssets/connect.php";
 require "PHPAssets/formtools.php";
 require "PHPAssets/pagetools.php";
 require "PHPAssets/accounttools.php";
+//Checks If Editor Is Employee
 if(!isset($_SESSION['CodeValue'])) {
 		session_destroy();
 		header("Location: employeeverify.php?error=employeeverifyfailed");
@@ -27,6 +33,7 @@ if(!isset($_SESSION['Password'])) {
 $verify_array = array("CodeValue" => decryptDisplay($_SESSION['CodeValue'], $con), "Password" => decryptDisplay($_SESSION['Password'], $con));
 isEmployee($con, $verify_array);
 unset($verify_array);
+//Check If Product To Edit Is Selected and That It Exists
 if(!isset($_GET['product'])) {
 	header("Location: productinventory.php?error=missing");
 	die;
@@ -83,6 +90,8 @@ printError("upload", "File Upload Failed");
 printError("file", "Invalid File(s) found in the Set Provided. Check To Make Sure All Files Are Image Files");
 printError('limit', 'More Than 4 Files Uploaded. Server Image Upload Can Only Handle 4 at a Time.');
 ?>
+<!--Appends Images To Product-->
+<!--Url Is Provided To Go To ImgBB Site To Delete Images From System And Should Be Consulted With Admin With DB Access To Optimize Image Link String-->
 <label for='Images[]'>Add Additional Images Of The Product. If You Need to Remove any Images From The Product View or Want to see the Current Images, Go To <a href='https://imgbb.com/'><img src='Images/imgbb.png' style='width:5%;height:4%;' title='ImgBB' alt='ImgBB'/></a> To Change It (ask admin for login info). Remember That Only 4 Images Can Uploaded at a Time.</label>
 <input name="Images[]" type="file" autocomplete="false" multiple accept="image/*"/>
 <?php 
@@ -90,6 +99,7 @@ printError("wrongselect1", "Option Selected Doesn't Match The Dropdown");
 ?>
 <label for="Category">Change The Type OF Electronic The Product Is Related To Here. Current Listed Electronic Value is <?php echo $product['Category'];?></label>
 <select name="Category">
+<!--This Option Is Selected For No Modification-->
 <option value="None">Don't Change</option>
 <option value="Desktop">Desktop Computer</option>
 <option value="PC">Portable Computer</option>
@@ -103,6 +113,7 @@ printError("wrongselect2", "Option Selected Doesn't Match The Dropdown");
 ?>
 <label for="ProductType">Change The Type Of Product It Is Listed As Here. Current Listed Product Type is <?php echo $product['ProductType']?></label>
 <select name="ProductType">
+<!--This Option Is Selected For No Modification-->
 <option value="None">Don't Change</option>
 <option value="Electronic">Whole Electronic (PC, Phone, Tablet, Etc)</option>
 <option value="Hardware">Hardware Piece For Electronic (CPU, Monitor, Keyboard, Printer, Etc)</option>

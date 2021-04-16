@@ -1,3 +1,8 @@
+<!--
+Programmer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: View More Details About A Given Product Before Adding To Cart
+-->
 <html>
 <head>
 <link href="CSS/main.css" rel="stylesheet"/>
@@ -29,6 +34,7 @@ setAccountTabs();
 <main>
 <?php
 if(isset($_GET['product'])) {
+	//Iff Product Exists, Get The Needed Information
 	if(!empty($_GET['product'])) {
 		$product = $con -> prepare("SELECT * FROM product WHERE ProductName = :name");
 		$product -> bindParam(':name', $_GET['product']);
@@ -47,8 +53,11 @@ else {
 	die;
 }
 ?>
+<!--Product Image View Div-->
 <div style="float:left;width:15%;">
 <?php
+//Set The List of Images Assosiated with The Product
+//User Rolls Over A Image To Change the Main one in the Center Div (If More Than 4 Exist, Use Arrow Button to Flip To Next Set)
 $images = explode(" ", $product_info['ProductImage']);
 if(isset($_GET['imgset'])) {
 	$start = intval($_GET['imgset']) * 3;
@@ -76,11 +85,13 @@ if($current + 1 < sizeof($images)) {
 }
 ?>
 </div>
+<!--Main Image Div (Determined By Image List To Left Div)-->
 <div style="float:left;width:40%;">
 <?php
 printf("<img src='%s' id='currentImage' title='Image %d' alt='%s'/>", $images[$start], $start + 1, $product_info['ProductName']);
 ?>
 </div>
+<!--Product Info-->
 <div style="float:left;width:45%;">
 <?php
 if($product_info['Quantity'] <= 0)
@@ -90,6 +101,7 @@ else
 ?>
 </div>
 <br clear=both>
+<!--Product Review Form-->
 <h1>Like the Product? Write a Review!</h1>
 <div id='reviews'>
 <form action='<?php printf('productview.php?product=%s&imgset=%s&action=sendreview', $_GET['product'], $_GET['imgset']);?>'>

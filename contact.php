@@ -1,3 +1,8 @@
+<!--
+Developer: Jonathan Petani
+Date: April 2020 - April 2021
+Purpose: Contains Contact and Location Information.
+-->
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -28,11 +33,13 @@ setAccountTabs($con);
 <p>We operate out of Mexico City.</p>
 <h3>Address</h3>
 <address>Fan Center Eje Central Lázaro Cárdenas 11, Colonia Centro, Centro, Cuauhtémoc, 06000 Ciudad de México, CDMX 55 5521 0702</address>
+<!-- Business Location-->
 <div class="mapouter"><div class="gmap_canvas"><iframe width="600" height="625" id="gmap_canvas" src="https://maps.google.com/maps?q=Fan%20Center%20Eje%20Central%20L%C3%A1zaro%20C%C3%A1rdenas%2011,%20Colonia%20Centro,%20Centro,%20Cuauht%C3%A9moc,%2006000%20Ciudad%20de%20M%C3%A9xico,%20CDMX%2055%205521%200702&t=&z=15&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://123movies-to.org">123movies</a><br><style>.mapouter{position:relative;text-align:right;height:625px;width:600px;}</style><a href="https://www.embedgooglemap.net"></a><style>.gmap_canvas {overflow:hidden;background:none!important;height:625px;width:600px;}</style></div></div></div>
 <div class='col-sm-4' style='background-color:SteelBlue;'>
 <h2>Message Us Directly</h2>
 <form>
 <?php
+//determines which contact form should be visible whether viewer is customer logged in or new visitor
 if(isset($_SESSION['type'])) {
 	if(strcmp($_SESSION['type'], 'customer') != 0) {
 		echo "<div class='row'>";
